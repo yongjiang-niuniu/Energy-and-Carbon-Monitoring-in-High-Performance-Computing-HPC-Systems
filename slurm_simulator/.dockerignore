@@ -1,0 +1,9 @@
+.git
+build-sim
+_install
+*.o
+*.lo
+*.la
+.libs
+autom4te.cache
+

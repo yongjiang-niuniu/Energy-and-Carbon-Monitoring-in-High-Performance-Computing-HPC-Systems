@@ -1,0 +1,11 @@
+.venv*
+*.swp
+
+/plots/
+/models/
+/hparams/
+/cpu_freq_tests/
+/hpe_restrictlongjobs_schedule/
+/experiments/
+
+__pycache__

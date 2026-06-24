@@ -1,0 +1,12 @@
+plot_dir: ""
+assocs_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/sacctmgr_assocs_230219.csv"
+node_events_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/sacctmgr_events_221019-230219.csv"
+reservations_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/hpelongjobs_resv_tests/sinfo_reservations_070223_medhpelongjobs.csv"
+job_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/sacct_2022-10-19_2023-02-19_allocations_noconvert.csv"
+
+bf_max_job_test: 1000
+bf_window: 5760
+bf_continue: True
+defer: True
+default_queue_depth: 256
+PriorityMaxAge: 2

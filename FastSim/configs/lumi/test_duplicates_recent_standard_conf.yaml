@@ -1,0 +1,11 @@
+assocs_dump: "/scratch/project_462000031/awilkinson/data/slurm_data_dumps/sacctmgr_assocs_230227.csv"
+qos_dump: "/scratch/project_462000031/awilkinson/data/slurm_data_dumps/sacctmgr_qos_230223.csv"
+node_events_dump: "/scratch/project_462000031/awilkinson/data/slurm_data_dumps/sacctmgr_events_230206-230226.csv"
+resv_dump: "/scratch/project_462000031/awilkinson/data/slurm_data_dumps/sinfo_reservations_230227.csv"
+job_dump: "/scratch/project_462000031/awilkinson/data/slurm_data_dumps/sacct_2023-02-06_2023-02-26_allocations_noconvert_duplicates.csv"
+slurm_conf: "/scratch/project_462000031/awilkinson/data/slurm_data_dumps/slurm_230223.conf"
+considered_partitions: ["standard"]
+
+approx_excess_assocs: 150
+
+hpe_restrictlongjobs_sliding_reservations: ""

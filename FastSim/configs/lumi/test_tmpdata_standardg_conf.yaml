@@ -1,0 +1,12 @@
+assocs_dump: "/users/awilkinson/work/data_tmp/slurm_dumps/sacctmgr_assocs_230307.csv"
+qos_dump: "/users/awilkinson/work/data_tmp/slurm_dumps/sacctmgr_qos_230307.csv"
+node_events_dump: "/users/awilkinson/work/data_tmp/slurm_dumps/sacctmgr_events_230101-230301.csv"
+resv_dump: "/users/awilkinson/work/data_tmp/slurm_dumps/sinfo_reservations_070323.csv"
+job_dump: "/users/awilkinson/work/data_tmp/slurm_dumps/sacct_2023-01-01_2023-03-01_allocations_noconvert_duplicates.csv"
+slurm_conf: "/users/awilkinson/work/data_tmp/slurm_dumps/slurm_230307.conf"
+considered_partitions: ["standard", "standard-g"]
+
+approx_excess_assocs: 150
+
+hpe_restrictlongjobs_sliding_reservations: ""
+nodes_down_in_blades: True

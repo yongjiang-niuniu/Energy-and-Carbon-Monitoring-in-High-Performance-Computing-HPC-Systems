@@ -1,0 +1,16 @@
+plot_dir: ""
+assocs_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/sacct_archer2_assocs_230129.csv"
+node_events_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/sacctmgr_events_221019-230129.csv"
+reservations_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/hpelongjobs_resv_tests/sinfo_reservations_070223_medhpelongjobs.csv"
+job_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/sacct_2022-10-19_2023-01-29_allocations_noconvert.txt"
+
+# Trying to ~ replicate actual performance (based on sdiag):
+# - Don't really see backfill exceeding ~320 jobs with planned start times (sdiag shows it is
+# max allowed cycle time when it has this number of start times planned)
+# - Usually around 5 scheduling cycles per minute, this varies a lot with how busy slurm is though
+bf_max_job_test: 320
+bf_window: 5760
+bf_continue: True
+defer: True
+default_queue_depth: 256
+sched_min_interval: 12000000

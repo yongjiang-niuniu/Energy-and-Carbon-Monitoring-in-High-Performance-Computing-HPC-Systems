@@ -1,0 +1,35 @@
+# macOS local files
+.DS_Store
+
+# Private supervisor/email materials
+和导师的对话/
+HPC项目重要资料_邮件附件候选/
+
+# Local credentials and secrets
+*.local.json
+*.secret.json
+*credentials*.json
+*token*.json
+.env
+.env.*
+
+# Python/local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Build outputs and logs
+build/
+dist/
+*.log
+core
+
+# Local Slurm simulator runs
+slurm_simulator/build-sim/
+slurm_simulator/demo-sim/
+slurm_simulator/stanage-sim/
+
+# Local reference papers and course PDFs
+论文/
+*.pdf

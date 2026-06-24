@@ -1,0 +1,50 @@
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        libpam0g-dev \
+        libssl-dev \
+        perl \
+        pkg-config \
+        python3 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /src
+COPY . /src
+
+RUN mkdir -p /build \
+    && cd /build \
+    && /src/configure \
+        --prefix=/opt/slurm-sim \
+        --sysconfdir=/opt/slurm-sim/etc \
+        --localstatedir=/opt/slurm-sim/var \
+        --enable-simulator \
+        --disable-x11 \
+        --without-munge \
+        --without-mysql_config \
+        --without-hwloc \
+        --without-json \
+        --without-yaml \
+        --without-jwt \
+        --without-http-parser \
+        --without-readline \
+    && make -j"$(nproc)" \
+    && make install \
+    && rm -rf /build /src
+
+COPY demo-sim/ /opt/slurm-sim/etc/
+
+RUN mkdir -p \
+        /opt/slurm-sim/var/spool/slurmctld \
+        /opt/slurm-sim/var/spool/slurmd \
+        /var/log/slurm \
+        /run/slurm
+
+ENV PATH="/opt/slurm-sim/bin:/opt/slurm-sim/sbin:${PATH}"
+
+CMD ["slurmctld", "-D", "-vvvv", "-c", "/opt/slurm-sim/etc/slurm.conf"]
+

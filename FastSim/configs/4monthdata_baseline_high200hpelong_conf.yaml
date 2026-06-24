@@ -1,0 +1,21 @@
+assocs_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/sacctmgr_assocs_230222.csv"
+qos_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/sacctmgr_qos_230223.csv"
+node_events_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/sacctmgr_events_221019-230219.csv"
+resv_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/hpelongjobs_resv_tests/sinfo_reservations_070223_high200hpelongjobs.csv"
+job_dump: "/work/y02/y02/awilkins/data/slurm_data_dumps/sacct_2022-10-19_2023-02-19_allocations_noconvert.csv"
+slurm_conf: "/work/y02/y02/awilkins/data/slurm_data_dumps/slurm_230221.conf"
+considered_partitions: ["standard", "highmem"]
+
+approx_excess_assocs: 1200
+
+hpe_restrictlong_sliding_reservations: "dynamic"
+
+bf_max_job_test: 1000
+bf_window: 5760
+bf_continue: True
+defer: True
+default_queue_depth: 256
+
+sched_min_interval : 12000000
+approx_bf_try_per_sec : 30
+

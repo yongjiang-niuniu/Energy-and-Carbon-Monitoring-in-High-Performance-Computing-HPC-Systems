@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+#
+# Launch the Slurm simulator configured as a 1:1 replica of the
+# University of Sheffield "Stanage" HPC cluster.
+#
+# Topology (from https://docs.hpc.shef.ac.uk/en/latest/stanage/cluster_specs.html):
+#   node[001-142]    standard     64c / 251 GB
+#   bigmem[01-12]    large mem    64c / 1 TB
+#   hugemem[01-12]   v.large mem  64c / 2 TB
+#   gpua100[01-13]   gpu          48c / 512 GB / 4x A100
+#   gpuh100[01-06]   gpu-h100     48c / 512 GB / 2x H100
+#   gpuh100nvl[01-04] gpu-h100-nvl 96c / 512 GB / 4x H100 NVL
+#   => 189 publicly itemised worker nodes
+#
+# The replayed workload is in stanage-sim/sim.events. To prove every node
+# is online instead, run with:  ./run-stanage.sh verify
+#
+set -euo pipefail
+cd "$(dirname "$0")"
+
+if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+MODE="${1:-workload}"
+CONF_DIR="$PWD/stanage-sim"
+
+echo "==> Ensuring Colima VM is running..."
+colima status >/dev/null 2>&1 || \
+    colima start --cpu 4 --memory 8 --disk 60 --vm-type vz --mount-type virtiofs
+
+echo "==> Building simulator image (if needed)..."
+docker build -t slurm-sim-local:latest -f Dockerfile.local-sim . >/dev/null
+
+# Select which events file to replay.
+EVENTS="sim.events"
+if [ "$MODE" = "verify" ]; then
+    EVENTS="sim.events.verify"
+    echo "==> VERIFY mode: each partition is filled with a job using ALL its nodes."
+fi
+# Point sim.conf at the chosen events file (kept in sync, restored after).
+sed -i.bak "s|^EventsFile=.*|EventsFile=${EVENTS}|" "$CONF_DIR/sim.conf"
+
+echo "==> Running the Stanage simulation..."
+rm -f "$CONF_DIR/slurmctld.log" "$CONF_DIR/sched.log" "$CONF_DIR/core"
+docker run --rm --hostname node001 \
+    -v "$CONF_DIR":/opt/slurm-sim/etc \
+    slurm-sim-local:latest \
+    bash -c 'cd /opt/slurm-sim/etc && stdbuf -oL -eL timeout -s KILL 90 slurmctld -D -i >/dev/null 2>&1; true'
+
+# Restore sim.conf and clean the core dump left by the harmless shutdown segfault.
+mv -f "$CONF_DIR/sim.conf.bak" "$CONF_DIR/sim.conf"
+rm -f "$CONF_DIR/core"
+
+echo
+echo "==================== Job scheduling timeline ===================="
+grep -E "_start_job: Started JobId|_job_complete: JobId=[0-9]+ done|All done\." \
+    "$CONF_DIR/slurmctld.log" || true
+echo "================================================================"
+echo "Full controller log: stanage-sim/slurmctld.log"
