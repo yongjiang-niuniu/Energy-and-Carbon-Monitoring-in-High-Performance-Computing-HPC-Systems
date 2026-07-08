@@ -1,0 +1,140 @@
+-e submit_batch_job -dt 186 | --uid=dave -J jobid_1 -p standard -N 1 -n 4 -t 60 -sim-walltime 617 pseudo.job -sleep 617
+-e submit_batch_job -dt 245 | --uid=frank -J jobid_2 -p standard -N 1 -n 4 -t 120 -sim-walltime 1227 pseudo.job -sleep 1227
+-e submit_batch_job -dt 490 | --uid=bob -J jobid_3 -p standard -N 8 -n 512 -t 720 -sim-walltime 24422 pseudo.job -sleep 24422
+-e submit_batch_job -dt 898 | --uid=carol -J jobid_4 -p gpu -N 2 -n 96 --gres=gpu:a100:4 -t 2880 -sim-walltime 52535 pseudo.job -sleep 52535
+-e submit_batch_job -dt 998 | --uid=bob -J jobid_5 -p standard -N 64 -n 4096 -t 480 -sim-walltime 12945 pseudo.job -sleep 12945
+-e submit_batch_job -dt 1043 | --uid=carol -J jobid_6 -p gpu -N 1 -n 48 --gres=gpu:a100:4 -t 240 -sim-walltime 7593 pseudo.job -sleep 7593
+-e submit_batch_job -dt 1048 | --uid=bob -J jobid_7 -p standard -N 1 -n 4 -t 15 -sim-walltime 418 pseudo.job -sleep 418
+-e submit_batch_job -dt 1241 | --uid=alice -J jobid_8 -p standard -N 1 -n 4 -t 60 -sim-walltime 597 pseudo.job -sleep 597
+-e submit_batch_job -dt 1286 | --uid=dave -J jobid_9 -p standard -N 1 -n 1 -t 480 -sim-walltime 5477 pseudo.job -sleep 5477
+-e submit_batch_job -dt 1590 | --uid=grace -J jobid_10 -p bigmem -N 1 -n 64 -t 240 -sim-walltime 3895 pseudo.job -sleep 3895
+-e submit_batch_job -dt 1890 | --uid=bob -J jobid_11 -p standard -N 2 -n 128 -t 2880 -sim-walltime 57449 pseudo.job -sleep 57449
+-e submit_batch_job -dt 1966 | --uid=alice -J jobid_12 -p standard -N 16 -n 1024 -t 2880 -sim-walltime 34541 pseudo.job -sleep 34541
+-e submit_batch_job -dt 2544 | --uid=erin -J jobid_13 -p standard -N 16 -n 1024 -t 1440 -sim-walltime 19484 pseudo.job -sleep 19484
+-e submit_batch_job -dt 2562 | --uid=carol -J jobid_14 -p gpu-h100 -N 1 -n 8 --gres=gpu:h100:1 -t 60 -sim-walltime 1393 pseudo.job -sleep 1393
+-e submit_batch_job -dt 2906 | --uid=bob -J jobid_15 -p standard -N 1 -n 4 -t 120 -sim-walltime 1232 pseudo.job -sleep 1232
+-e submit_batch_job -dt 3208 | --uid=erin -J jobid_16 -p standard -N 1 -n 1 -t 480 -sim-walltime 3141 pseudo.job -sleep 3141
+-e submit_batch_job -dt 3348 | --uid=alice -J jobid_17 -p standard -N 16 -n 1024 -t 720 -sim-walltime 8758 pseudo.job -sleep 8758
+-e submit_batch_job -dt 3436 | --uid=bob -J jobid_18 -p standard -N 8 -n 512 -t 1440 -sim-walltime 18634 pseudo.job -sleep 18634
+-e submit_batch_job -dt 3760 | --uid=carol -J jobid_19 -p standard -N 4 -n 256 -t 480 -sim-walltime 5426 pseudo.job -sleep 5426
+-e submit_batch_job -dt 4122 | --uid=bob -J jobid_20 -p standard -N 2 -n 128 -t 480 -sim-walltime 9105 pseudo.job -sleep 9105
+-e submit_batch_job -dt 4345 | --uid=alice -J jobid_21 -p gpu -N 1 -n 48 --gres=gpu:a100:4 -t 480 -sim-walltime 7039 pseudo.job -sleep 7039
+-e submit_batch_job -dt 4393 | --uid=carol -J jobid_22 -p gpu -N 1 -n 48 --gres=gpu:a100:4 -t 1440 -sim-walltime 20129 pseudo.job -sleep 20129
+-e submit_batch_job -dt 4408 | --uid=dave -J jobid_23 -p standard -N 1 -n 4 -t 15 -sim-walltime 241 pseudo.job -sleep 241
+-e submit_batch_job -dt 4428 | --uid=dave -J jobid_24 -p bigmem -N 1 -n 32 -t 720 -sim-walltime 10352 pseudo.job -sleep 10352
+-e submit_batch_job -dt 4613 | --uid=alice -J jobid_25 -p bigmem -N 1 -n 16 -t 240 -sim-walltime 7592 pseudo.job -sleep 7592
+-e submit_batch_job -dt 4697 | --uid=carol -J jobid_26 -p standard -N 1 -n 4 -t 60 -sim-walltime 457 pseudo.job -sleep 457
+-e submit_batch_job -dt 4754 | --uid=alice -J jobid_27 -p gpu -N 1 -n 48 --gres=gpu:a100:4 -t 1440 -sim-walltime 17219 pseudo.job -sleep 17219
+-e submit_batch_job -dt 4946 | --uid=alice -J jobid_28 -p gpu-h100 -N 1 -n 8 --gres=gpu:h100:1 -t 120 -sim-walltime 1164 pseudo.job -sleep 1164
+-e submit_batch_job -dt 4980 | --uid=carol -J jobid_29 -p gpu -N 1 -n 8 --gres=gpu:a100:1 -t 30 -sim-walltime 497 pseudo.job -sleep 497
+-e submit_batch_job -dt 5013 | --uid=carol -J jobid_30 -p standard -N 96 -n 6144 -t 240 -sim-walltime 5623 pseudo.job -sleep 5623
+-e submit_batch_job -dt 5848 | --uid=alice -J jobid_31 -p standard -N 4 -n 256 -t 1440 -sim-walltime 37223 pseudo.job -sleep 37223
+-e submit_batch_job -dt 5997 | --uid=alice -J jobid_32 -p standard -N 1 -n 8 -t 60 -sim-walltime 860 pseudo.job -sleep 860
+-e submit_batch_job -dt 6336 | --uid=erin -J jobid_33 -p standard -N 1 -n 4 -t 30 -sim-walltime 521 pseudo.job -sleep 521
+-e submit_batch_job -dt 6384 | --uid=alice -J jobid_34 -p standard -N 16 -n 1024 -t 240 -sim-walltime 5849 pseudo.job -sleep 5849
+-e submit_batch_job -dt 6453 | --uid=bob -J jobid_35 -p standard -N 1 -n 1 -t 480 -sim-walltime 4161 pseudo.job -sleep 4161
+-e submit_batch_job -dt 6497 | --uid=carol -J jobid_36 -p standard -N 4 -n 256 -t 480 -sim-walltime 5866 pseudo.job -sleep 5866
+-e submit_batch_job -dt 6880 | --uid=alice -J jobid_37 -p gpu -N 1 -n 8 --gres=gpu:a100:1 -t 480 -sim-walltime 5400 pseudo.job -sleep 5400
+-e submit_batch_job -dt 7075 | --uid=bob -J jobid_38 -p gpu -N 1 -n 8 --gres=gpu:a100:1 -t 120 -sim-walltime 1963 pseudo.job -sleep 1963
+-e submit_batch_job -dt 7525 | --uid=alice -J jobid_39 -p standard -N 1 -n 32 -t 120 -sim-walltime 1363 pseudo.job -sleep 1363
+-e submit_batch_job -dt 7582 | --uid=alice -J jobid_40 -p standard -N 1 -n 4 -t 240 -sim-walltime 2502 pseudo.job -sleep 2502
+-e submit_batch_job -dt 7733 | --uid=carol -J jobid_41 -p standard -N 1 -n 4 -t 240 -sim-walltime 5479 pseudo.job -sleep 5479
+-e submit_batch_job -dt 7894 | --uid=alice -J jobid_42 -p standard -N 64 -n 4096 -t 720 -sim-walltime 20283 pseudo.job -sleep 20283
+-e submit_batch_job -dt 7987 | --uid=alice -J jobid_43 -p standard -N 1 -n 16 -t 720 -sim-walltime 10503 pseudo.job -sleep 10503
+-e submit_batch_job -dt 9088 | --uid=alice -J jobid_44 -p standard -N 2 -n 128 -t 1440 -sim-walltime 16498 pseudo.job -sleep 16498
+-e submit_batch_job -dt 9105 | --uid=alice -J jobid_45 -p gpu -N 1 -n 48 --gres=gpu:a100:4 -t 720 -sim-walltime 17199 pseudo.job -sleep 17199
+-e submit_batch_job -dt 9126 | --uid=alice -J jobid_46 -p standard -N 1 -n 8 -t 30 -sim-walltime 361 pseudo.job -sleep 361
+-e submit_batch_job -dt 9414 | --uid=bob -J jobid_47 -p gpu -N 2 -n 96 --gres=gpu:a100:4 -t 1440 -sim-walltime 24851 pseudo.job -sleep 24851
+-e submit_batch_job -dt 9426 | --uid=heidi -J jobid_48 -p standard -N 4 -n 256 -t 60 -sim-walltime 748 pseudo.job -sleep 748
+-e submit_batch_job -dt 10443 | --uid=frank -J jobid_49 -p standard -N 1 -n 4 -t 120 -sim-walltime 1171 pseudo.job -sleep 1171
+-e submit_batch_job -dt 11093 | --uid=alice -J jobid_50 -p standard -N 32 -n 2048 -t 1440 -sim-walltime 16618 pseudo.job -sleep 16618
+-e submit_batch_job -dt 11095 | --uid=carol -J jobid_51 -p bigmem -N 1 -n 16 -t 480 -sim-walltime 5396 pseudo.job -sleep 5396
+-e submit_batch_job -dt 11304 | --uid=grace -J jobid_52 -p standard -N 8 -n 512 -t 720 -sim-walltime 16714 pseudo.job -sleep 16714
+-e submit_batch_job -dt 11361 | --uid=dave -J jobid_53 -p standard -N 1 -n 8 -t 240 -sim-walltime 4478 pseudo.job -sleep 4478
+-e submit_batch_job -dt 11383 | --uid=dave -J jobid_54 -p gpu -N 2 -n 96 --gres=gpu:a100:4 -t 4320 -sim-walltime 72000 pseudo.job -sleep 72000
+-e submit_batch_job -dt 11494 | --uid=frank -J jobid_55 -p standard -N 2 -n 128 -t 2880 -sim-walltime 35435 pseudo.job -sleep 35435
+-e submit_batch_job -dt 11876 | --uid=carol -J jobid_56 -p standard -N 1 -n 16 -t 120 -sim-walltime 1137 pseudo.job -sleep 1137
+-e submit_batch_job -dt 12003 | --uid=frank -J jobid_57 -p gpu-h100 -N 1 -n 8 --gres=gpu:h100:1 -t 240 -sim-walltime 5400 pseudo.job -sleep 5400
+-e submit_batch_job -dt 12450 | --uid=bob -J jobid_58 -p standard -N 1 -n 4 -t 240 -sim-walltime 2233 pseudo.job -sleep 2233
+-e submit_batch_job -dt 12515 | --uid=alice -J jobid_59 -p standard -N 8 -n 512 -t 480 -sim-walltime 5923 pseudo.job -sleep 5923
+-e submit_batch_job -dt 12687 | --uid=dave -J jobid_60 -p standard -N 4 -n 256 -t 1440 -sim-walltime 17644 pseudo.job -sleep 17644
+-e submit_batch_job -dt 12950 | --uid=alice -J jobid_61 -p gpu -N 1 -n 48 --gres=gpu:a100:4 -t 1440 -sim-walltime 24059 pseudo.job -sleep 24059
+-e submit_batch_job -dt 13226 | --uid=dave -J jobid_62 -p gpu -N 1 -n 8 --gres=gpu:a100:1 -t 120 -sim-walltime 2093 pseudo.job -sleep 2093
+-e submit_batch_job -dt 13227 | --uid=bob -J jobid_63 -p gpu -N 2 -n 96 --gres=gpu:a100:4 -t 4320 -sim-walltime 72000 pseudo.job -sleep 72000
+-e submit_batch_job -dt 13230 | --uid=alice -J jobid_64 -p standard -N 4 -n 256 -t 480 -sim-walltime 5134 pseudo.job -sleep 5134
+-e submit_batch_job -dt 13617 | --uid=alice -J jobid_65 -p standard -N 1 -n 8 -t 480 -sim-walltime 2940 pseudo.job -sleep 2940
+-e submit_batch_job -dt 13684 | --uid=grace -J jobid_66 -p gpu-h100 -N 1 -n 16 --gres=gpu:h100:2 -t 120 -sim-walltime 2133 pseudo.job -sleep 2133
+-e submit_batch_job -dt 14069 | --uid=carol -J jobid_67 -p standard -N 1 -n 32 -t 15 -sim-walltime 447 pseudo.job -sleep 447
+-e submit_batch_job -dt 14086 | --uid=alice -J jobid_68 -p standard -N 8 -n 512 -t 2880 -sim-walltime 26282 pseudo.job -sleep 26282
+-e submit_batch_job -dt 14099 | --uid=alice -J jobid_69 -p standard -N 1 -n 1 -t 480 -sim-walltime 5887 pseudo.job -sleep 5887
+-e submit_batch_job -dt 14365 | --uid=bob -J jobid_70 -p gpu -N 1 -n 8 --gres=gpu:a100:1 -t 120 -sim-walltime 1017 pseudo.job -sleep 1017
+-e submit_batch_job -dt 14483 | --uid=dave -J jobid_71 -p standard -N 2 -n 128 -t 240 -sim-walltime 4500 pseudo.job -sleep 4500
+-e submit_batch_job -dt 14540 | --uid=dave -J jobid_72 -p bigmem -N 1 -n 32 -t 240 -sim-walltime 4435 pseudo.job -sleep 4435
+-e submit_batch_job -dt 14640 | --uid=bob -J jobid_73 -p gpu -N 1 -n 16 --gres=gpu:a100:2 -t 15 -sim-walltime 400 pseudo.job -sleep 400
+-e submit_batch_job -dt 14782 | --uid=alice -J jobid_74 -p standard -N 1 -n 4 -t 15 -sim-walltime 117 pseudo.job -sleep 117
+-e submit_batch_job -dt 14823 | --uid=carol -J jobid_75 -p standard -N 1 -n 32 -t 240 -sim-walltime 2941 pseudo.job -sleep 2941
+-e submit_batch_job -dt 15800 | --uid=alice -J jobid_76 -p bigmem -N 1 -n 64 -t 240 -sim-walltime 2542 pseudo.job -sleep 2542
+-e submit_batch_job -dt 15905 | --uid=erin -J jobid_77 -p gpu-h100 -N 1 -n 8 --gres=gpu:h100:1 -t 240 -sim-walltime 2253 pseudo.job -sleep 2253
+-e submit_batch_job -dt 15929 | --uid=alice -J jobid_78 -p standard -N 2 -n 128 -t 1440 -sim-walltime 21147 pseudo.job -sleep 21147
+-e submit_batch_job -dt 16005 | --uid=alice -J jobid_79 -p standard -N 1 -n 16 -t 15 -sim-walltime 444 pseudo.job -sleep 444
+-e submit_batch_job -dt 16052 | --uid=dave -J jobid_80 -p standard -N 4 -n 256 -t 720 -sim-walltime 11455 pseudo.job -sleep 11455
+-e submit_batch_job -dt 16066 | --uid=alice -J jobid_81 -p gpu-h100-nvl -N 1 -n 96 --gres=gpu:h100nvl:4 -t 1440 -sim-walltime 36400 pseudo.job -sleep 36400
+-e submit_batch_job -dt 16114 | --uid=dave -J jobid_82 -p hugemem -N 1 -n 64 -t 1440 -sim-walltime 29789 pseudo.job -sleep 29789
+-e submit_batch_job -dt 16473 | --uid=carol -J jobid_83 -p standard -N 16 -n 1024 -t 480 -sim-walltime 6768 pseudo.job -sleep 6768
+-e submit_batch_job -dt 16567 | --uid=bob -J jobid_84 -p gpu -N 1 -n 48 --gres=gpu:a100:4 -t 1440 -sim-walltime 21757 pseudo.job -sleep 21757
+-e submit_batch_job -dt 17489 | --uid=bob -J jobid_85 -p gpu-h100 -N 1 -n 8 --gres=gpu:h100:1 -t 480 -sim-walltime 4402 pseudo.job -sleep 4402
+-e submit_batch_job -dt 18607 | --uid=bob -J jobid_86 -p gpu-h100 -N 1 -n 16 --gres=gpu:h100:2 -t 30 -sim-walltime 673 pseudo.job -sleep 673
+-e submit_batch_job -dt 18701 | --uid=bob -J jobid_87 -p standard -N 1 -n 32 -t 60 -sim-walltime 1421 pseudo.job -sleep 1421
+-e submit_batch_job -dt 19064 | --uid=bob -J jobid_88 -p gpu -N 1 -n 48 --gres=gpu:a100:4 -t 4320 -sim-walltime 72000 pseudo.job -sleep 72000
+-e submit_batch_job -dt 19203 | --uid=carol -J jobid_89 -p gpu -N 1 -n 8 --gres=gpu:a100:1 -t 30 -sim-walltime 744 pseudo.job -sleep 744
+-e submit_batch_job -dt 19509 | --uid=alice -J jobid_90 -p standard -N 1 -n 4 -t 30 -sim-walltime 792 pseudo.job -sleep 792
+-e submit_batch_job -dt 21818 | --uid=carol -J jobid_91 -p standard -N 1 -n 4 -t 480 -sim-walltime 5694 pseudo.job -sleep 5694
+-e submit_batch_job -dt 21940 | --uid=dave -J jobid_92 -p standard -N 96 -n 6144 -t 720 -sim-walltime 26516 pseudo.job -sleep 26516
+-e submit_batch_job -dt 22034 | --uid=bob -J jobid_93 -p bigmem -N 1 -n 64 -t 240 -sim-walltime 5436 pseudo.job -sleep 5436
+-e submit_batch_job -dt 23046 | --uid=bob -J jobid_94 -p standard -N 1 -n 8 -t 15 -sim-walltime 291 pseudo.job -sleep 291
+-e submit_batch_job -dt 24010 | --uid=alice -J jobid_95 -p standard -N 1 -n 4 -t 240 -sim-walltime 5020 pseudo.job -sleep 5020
+-e submit_batch_job -dt 24224 | --uid=bob -J jobid_96 -p standard -N 1 -n 8 -t 30 -sim-walltime 420 pseudo.job -sleep 420
+-e submit_batch_job -dt 24629 | --uid=bob -J jobid_97 -p standard -N 1 -n 16 -t 120 -sim-walltime 1247 pseudo.job -sleep 1247
+-e submit_batch_job -dt 25326 | --uid=bob -J jobid_98 -p gpu -N 1 -n 48 --gres=gpu:a100:4 -t 480 -sim-walltime 12573 pseudo.job -sleep 12573
+-e submit_batch_job -dt 26609 | --uid=dave -J jobid_99 -p standard -N 1 -n 1 -t 240 -sim-walltime 2640 pseudo.job -sleep 2640
+-e submit_batch_job -dt 27139 | --uid=bob -J jobid_100 -p standard -N 16 -n 1024 -t 1440 -sim-walltime 16574 pseudo.job -sleep 16574
+-e submit_batch_job -dt 27836 | --uid=frank -J jobid_101 -p standard -N 1 -n 1 -t 720 -sim-walltime 6649 pseudo.job -sleep 6649
+-e submit_batch_job -dt 28147 | --uid=bob -J jobid_102 -p standard -N 1 -n 16 -t 120 -sim-walltime 2133 pseudo.job -sleep 2133
+-e submit_batch_job -dt 28373 | --uid=frank -J jobid_103 -p standard -N 1 -n 4 -t 120 -sim-walltime 1533 pseudo.job -sleep 1533
+-e submit_batch_job -dt 28684 | --uid=alice -J jobid_104 -p standard -N 1 -n 8 -t 120 -sim-walltime 3267 pseudo.job -sleep 3267
+-e submit_batch_job -dt 28868 | --uid=bob -J jobid_105 -p standard -N 96 -n 6144 -t 1440 -sim-walltime 26238 pseudo.job -sleep 26238
+-e submit_batch_job -dt 29334 | --uid=carol -J jobid_106 -p gpu -N 2 -n 96 --gres=gpu:a100:4 -t 480 -sim-walltime 7140 pseudo.job -sleep 7140
+-e submit_batch_job -dt 29435 | --uid=bob -J jobid_107 -p standard -N 96 -n 6144 -t 720 -sim-walltime 25201 pseudo.job -sleep 25201
+-e submit_batch_job -dt 29621 | --uid=bob -J jobid_108 -p standard -N 1 -n 4 -t 15 -sim-walltime 279 pseudo.job -sleep 279
+-e submit_batch_job -dt 29971 | --uid=carol -J jobid_109 -p standard -N 1 -n 4 -t 15 -sim-walltime 223 pseudo.job -sleep 223
+-e submit_batch_job -dt 30774 | --uid=bob -J jobid_110 -p bigmem -N 1 -n 64 -t 1440 -sim-walltime 31453 pseudo.job -sleep 31453
+-e submit_batch_job -dt 31552 | --uid=carol -J jobid_111 -p standard -N 1 -n 1 -t 480 -sim-walltime 4723 pseudo.job -sleep 4723
+-e submit_batch_job -dt 31605 | --uid=bob -J jobid_112 -p standard -N 1 -n 1 -t 60 -sim-walltime 1180 pseudo.job -sleep 1180
+-e submit_batch_job -dt 33265 | --uid=alice -J jobid_113 -p standard -N 1 -n 4 -t 480 -sim-walltime 3603 pseudo.job -sleep 3603
+-e submit_batch_job -dt 33361 | --uid=frank -J jobid_114 -p standard -N 1 -n 8 -t 480 -sim-walltime 5128 pseudo.job -sleep 5128
+-e submit_batch_job -dt 33455 | --uid=grace -J jobid_115 -p standard -N 1 -n 8 -t 240 -sim-walltime 2777 pseudo.job -sleep 2777
+-e submit_batch_job -dt 33644 | --uid=dave -J jobid_116 -p standard -N 1 -n 4 -t 1440 -sim-walltime 8998 pseudo.job -sleep 8998
+-e submit_batch_job -dt 34180 | --uid=bob -J jobid_117 -p gpu -N 1 -n 48 --gres=gpu:a100:4 -t 1440 -sim-walltime 25481 pseudo.job -sleep 25481
+-e submit_batch_job -dt 34471 | --uid=alice -J jobid_118 -p standard -N 1 -n 1 -t 60 -sim-walltime 1450 pseudo.job -sleep 1450
+-e submit_batch_job -dt 34475 | --uid=alice -J jobid_119 -p gpu-h100 -N 1 -n 16 --gres=gpu:h100:2 -t 30 -sim-walltime 409 pseudo.job -sleep 409
+-e submit_batch_job -dt 35173 | --uid=bob -J jobid_120 -p standard -N 1 -n 1 -t 480 -sim-walltime 10800 pseudo.job -sleep 10800
+-e submit_batch_job -dt 35487 | --uid=bob -J jobid_121 -p standard -N 8 -n 512 -t 720 -sim-walltime 11169 pseudo.job -sleep 11169
+-e submit_batch_job -dt 35985 | --uid=grace -J jobid_122 -p standard -N 4 -n 256 -t 480 -sim-walltime 9426 pseudo.job -sleep 9426
+-e submit_batch_job -dt 36000 | --uid=carol -J jobid_123 -p hugemem -N 1 -n 64 -t 480 -sim-walltime 13506 pseudo.job -sleep 13506
+-e submit_batch_job -dt 36601 | --uid=carol -J jobid_124 -p bigmem -N 1 -n 32 -t 240 -sim-walltime 3420 pseudo.job -sleep 3420
+-e submit_batch_job -dt 37246 | --uid=frank -J jobid_125 -p standard -N 1 -n 16 -t 15 -sim-walltime 270 pseudo.job -sleep 270
+-e submit_batch_job -dt 37848 | --uid=alice -J jobid_126 -p standard -N 1 -n 4 -t 30 -sim-walltime 576 pseudo.job -sleep 576
+-e submit_batch_job -dt 38108 | --uid=grace -J jobid_127 -p standard -N 1 -n 8 -t 240 -sim-walltime 6675 pseudo.job -sleep 6675
+-e submit_batch_job -dt 38895 | --uid=dave -J jobid_128 -p gpu -N 1 -n 8 --gres=gpu:a100:1 -t 60 -sim-walltime 547 pseudo.job -sleep 547
+-e submit_batch_job -dt 39095 | --uid=dave -J jobid_129 -p standard -N 1 -n 8 -t 15 -sim-walltime 92 pseudo.job -sleep 92
+-e submit_batch_job -dt 39397 | --uid=erin -J jobid_130 -p standard -N 2 -n 128 -t 480 -sim-walltime 9127 pseudo.job -sleep 9127
+-e submit_batch_job -dt 39559 | --uid=alice -J jobid_131 -p standard -N 2 -n 128 -t 720 -sim-walltime 14666 pseudo.job -sleep 14666
+-e submit_batch_job -dt 40593 | --uid=alice -J jobid_132 -p standard -N 1 -n 4 -t 60 -sim-walltime 648 pseudo.job -sleep 648
+-e submit_batch_job -dt 40998 | --uid=carol -J jobid_133 -p bigmem -N 1 -n 64 -t 120 -sim-walltime 1760 pseudo.job -sleep 1760
+-e submit_batch_job -dt 41406 | --uid=erin -J jobid_134 -p standard -N 4 -n 256 -t 480 -sim-walltime 5136 pseudo.job -sleep 5136
+-e submit_batch_job -dt 41606 | --uid=alice -J jobid_135 -p gpu -N 1 -n 48 --gres=gpu:a100:4 -t 240 -sim-walltime 4539 pseudo.job -sleep 4539
+-e submit_batch_job -dt 42124 | --uid=erin -J jobid_136 -p gpu-h100 -N 1 -n 8 --gres=gpu:h100:1 -t 120 -sim-walltime 3530 pseudo.job -sleep 3530
+-e submit_batch_job -dt 42164 | --uid=bob -J jobid_137 -p standard -N 2 -n 128 -t 240 -sim-walltime 18308 pseudo.job -sleep 18308
+-e submit_batch_job -dt 42563 | --uid=alice -J jobid_138 -p standard -N 1 -n 4 -t 120 -sim-walltime 1423 pseudo.job -sleep 1423
+-e submit_batch_job -dt 42826 | --uid=bob -J jobid_139 -p gpu-h100 -N 1 -n 8 --gres=gpu:h100:1 -t 15 -sim-walltime 209 pseudo.job -sleep 209
+-e submit_batch_job -dt 43021 | --uid=erin -J jobid_140 -p standard -N 32 -n 2048 -t 120 -sim-walltime 2620 pseudo.job -sleep 2620
