@@ -254,7 +254,7 @@ def main():
 
     profile_path = os.path.join(OUT_DIR, "workload_profile.csv")
     with open(profile_path, "w", newline="") as f:
-        w = csv.writer(f)
+        w = csv.writer(f, lineterminator="\n")
         w.writerow(["job_sim_id", "class", "user", "partition", "nodes",
                     "cores", "gpus", "gpu_type", "submit_dt_s",
                     "req_walltime_min", "actual_walltime_s", "outcome",

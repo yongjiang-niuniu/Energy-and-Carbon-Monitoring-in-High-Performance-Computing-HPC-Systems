@@ -112,7 +112,7 @@ def main():
                      state, nodelist.get(jid, "")])
 
     with open(args.out, "w", newline="") as f:
-        w = csv.writer(f)
+        w = csv.writer(f, lineterminator="\n")
         w.writerow(["job_id", "class", "user", "partition", "cores", "gpus",
                     "submit", "start", "end", "wait_min", "runtime_h",
                     "energy_kwh", "co2_kg", "state", "nodes"])

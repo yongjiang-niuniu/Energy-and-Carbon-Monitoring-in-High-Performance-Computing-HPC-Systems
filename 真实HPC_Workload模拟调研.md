@@ -1,6 +1,6 @@
 # 真实 HPC Workload 模拟调研
 
-> 项目：Energy and Carbon Monitoring in HPC Systems  
+> 项目：Energy and Carbon Monitoring in HPC Systems
 > 目标：用 Slurm Simulator 替代 placeholder 作业，模拟 AI / 物理模拟 / CPU·GPU 密集型混合负载
 
 ---
