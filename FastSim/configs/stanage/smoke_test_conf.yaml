@@ -1,0 +1,19 @@
+# Minimal Stanage-like smoke test — sample_data/stanage_smoke/ (paths relative to scheduler/)
+assocs_dump: "../sample_data/stanage_smoke/sacctmgr_assocs.csv"
+qos_dump: "../sample_data/stanage_smoke/sacctmgr_qos.csv"
+node_events_dump: "../sample_data/stanage_smoke/sacctmgr_events.csv"
+resv_dump: "../sample_data/stanage_smoke/sinfo_resv.csv"
+job_dump: "../sample_data/stanage_smoke/sacct_jobs.csv"
+slurm_conf: "../sample_data/stanage_smoke/slurm.conf"
+considered_partitions: ["standard"]
+
+approx_excess_assocs: 0
+hpe_restrictlong_sliding_reservations: ""
+
+bf_max_job_test: 100
+bf_window: 1440
+bf_continue: True
+defer: True
+default_queue_depth: 64
+sched_min_interval: 12000000
+approx_bf_try_per_sec: 10
