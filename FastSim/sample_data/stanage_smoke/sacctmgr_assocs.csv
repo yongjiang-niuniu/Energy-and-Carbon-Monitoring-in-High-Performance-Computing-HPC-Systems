@@ -1,0 +1,4 @@
+User|Account|ParentName|Partition|MaxJobs|MaxSubmit|
+|Acc0|root|||
+User0|Acc0||standard||
+User1|Acc0||standard||

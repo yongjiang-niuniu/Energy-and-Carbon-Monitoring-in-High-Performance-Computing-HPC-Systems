@@ -1,0 +1,6 @@
+User|Account|AllocNodes|ConsumedEnergyRaw|ExitCode|Flags|JobID|JobName|Partition|QOS|Reason|ReqNodes|ReqCPUS|Group|ReqMem|Start|State|End|Elapsed|Submit|SubmitLine|Timelimit|
+User0|Acc0|2|7200000|0:0||1001|job1001|standard|normal|None|2|64||0|2024-01-08T08:00:00|COMPLETED|2024-01-08T12:00:00|04:00:00|2024-01-08T08:00:00|sbatch -N 2 -t 06:00:00 job1001.sh|06:00:00|
+User1|Acc0|2|7200000|0:0||1002|job1002|standard|normal|None|2|64||0|2024-01-08T08:00:00|COMPLETED|2024-01-08T12:00:00|04:00:00|2024-01-08T08:00:00|sbatch -N 2 -t 06:00:00 job1002.sh|06:00:00|
+User0|Acc0|1|1800000|0:0||1003|job1003|standard|normal|None|1|64||0|2024-01-08T12:00:00|COMPLETED|2024-01-08T14:00:00|02:00:00|2024-01-08T09:00:00|sbatch -N 1 -t 04:00:00 job1003.sh|04:00:00|
+User1|Acc0|2|5400000|0:0||1004|job1004|standard|normal|None|2|64||0|2024-01-08T12:00:00|COMPLETED|2024-01-08T15:00:00|03:00:00|2024-01-08T10:00:00|sbatch -N 2 -t 06:00:00 job1004.sh|06:00:00|
+User0|Acc0|1|900000|0:0||1005|job1005|standard|normal|None|1|64||0|2024-01-08T15:00:00|COMPLETED|2024-01-08T16:00:00|01:00:00|2024-01-08T11:00:00|sbatch -N 1 -t 02:00:00 job1005.sh|02:00:00|
