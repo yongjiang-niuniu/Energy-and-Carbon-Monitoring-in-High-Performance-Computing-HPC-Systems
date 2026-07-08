@@ -5159,8 +5159,15 @@ extern int assoc_mgr_validate_assoc_id(void *db_conn,
 	   the association list can be made.
 	*/
 	if (!assoc_mgr_assoc_list)
-		if (assoc_mgr_refresh_lists(db_conn, 0) == SLURM_ERROR)
+		if (assoc_mgr_refresh_lists(db_conn, 0) == SLURM_ERROR) {
+#ifdef SLURM_SIMULATOR
+			/* No slurmdbd in the simulator; assoc refresh always
+			 * fails but accounting is disabled - treat as OK. */
+			return SLURM_SUCCESS;
+#else
 			return SLURM_ERROR;
+#endif
+		}
 
 	assoc_mgr_lock(&locks);
 	if ((!assoc_mgr_assoc_list
