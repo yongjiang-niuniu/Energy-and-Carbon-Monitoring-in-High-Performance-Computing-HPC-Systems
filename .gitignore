@@ -32,4 +32,9 @@ slurm_simulator/stanage-sim/
 
 # Local reference papers and course PDFs
 论文/
+!论文/文献索引.md
 *.pdf
+
+# Local PDF extraction/cache (not for version control)
+.paper_text/
+.pylibs/
