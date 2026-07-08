@@ -30,11 +30,12 @@ slurm_simulator/build-sim/
 slurm_simulator/demo-sim/
 slurm_simulator/stanage-sim/
 
-# Local reference papers and course PDFs
-论文/**
-!论文/
-!论文/文献索引.md
+# Literature PDFs under 论文/ are tracked; other PDFs stay local
 *.pdf
+!论文/
+!论文/**
+!论文/**/*.pdf
+!论文/**/*.md
 
 # Local PDF extraction/cache (not for version control)
 .paper_text/
