@@ -31,7 +31,8 @@ slurm_simulator/demo-sim/
 slurm_simulator/stanage-sim/
 
 # Local reference papers and course PDFs
-论文/
+论文/**
+!论文/
 !论文/文献索引.md
 *.pdf
 
