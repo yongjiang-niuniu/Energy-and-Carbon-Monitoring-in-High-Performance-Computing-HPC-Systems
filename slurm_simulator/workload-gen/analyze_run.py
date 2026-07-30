@@ -100,8 +100,12 @@ def main():
             a["kwh"] += kwh
             a["coreh"] += cores * run_h
             a["gpuh"] += gpus * run_h
-        state = ("TIMEOUT" if jid in timed_out else
-                 "COMPLETED" if dn else "RUNNING/UNKNOWN" if st else "PENDING")
+        if dn:
+            state = "TIMEOUT" if jid in timed_out else "COMPLETED"
+        elif jid in timed_out:
+            state = "TIMEOUT_WAITING_TERMINATION"
+        else:
+            state = "RUNNING/UNKNOWN" if st else "PENDING"
         rows.append([jid, p["class"], p["user"], p["partition"], cores, gpus,
                      sub.isoformat() if sub else "", st.isoformat() if st else "",
                      dn.isoformat() if dn else "",

@@ -1,0 +1,7 @@
+-e submit_batch_job -dt 0 | --uid=alice -J jobid_1 -p standard -N 8 -n 512 -t 60 -sim-walltime 12 pseudo.job -sleep 12
+-e submit_batch_job -dt 0 | --uid=bob -J jobid_2 -p standard -N 1 -n 16 -t 60 -sim-walltime 8 pseudo.job -sleep 8
+-e submit_batch_job -dt 1 | --uid=carol -J jobid_3 -p bigmem -N 1 -n 8 -t 60 -sim-walltime 6 pseudo.job -sleep 6
+-e submit_batch_job -dt 1 | --uid=alice -J jobid_4 -p gpu -N 1 -n 12 --gres=gpu:a100:2 -t 60 -sim-walltime 10 pseudo.job -sleep 10
+-e submit_batch_job -dt 2 | --uid=bob -J jobid_5 -p gpu-h100 -N 1 -n 8 --gres=gpu:h100:1 -t 60 -sim-walltime 5 pseudo.job -sleep 5
+-e submit_batch_job -dt 2 | --uid=carol -J jobid_6 -p hugemem -N 1 -n 4 -t 60 -sim-walltime 4 pseudo.job -sleep 4
+-e submit_batch_job -dt 3 | --uid=alice -J jobid_7 -p gpu-h100-nvl -N 1 -n 16 --gres=gpu:h100nvl:4 -t 60 -sim-walltime 7 pseudo.job -sleep 7

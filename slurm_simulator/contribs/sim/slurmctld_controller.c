@@ -44,6 +44,39 @@ extern bool sim_job_epilog_complete(uint32_t job_id, char *node_name,
                                     uint32_t return_code);
 extern void sim_notify_slurmctld_nodes();
 
+static bool sim_job_epilog_complete_all_nodes(job_record_t *job_ptr)
+{
+    bool completed = false;
+    node_record_t *node_ptr;
+
+    if (job_ptr->node_bitmap_cg) {
+        for (int i = 0;
+             job_ptr->node_bitmap_cg &&
+             (node_ptr = next_node_bitmap(job_ptr->node_bitmap_cg, &i));
+             i++) {
+            if (job_epilog_complete(job_ptr->job_id, node_ptr->name,
+                                    SLURM_SUCCESS)) {
+                completed = true;
+            }
+        }
+        return completed;
+    }
+
+    if (job_ptr->node_bitmap) {
+        for (int i = 0;
+             (node_ptr = next_node_bitmap(job_ptr->node_bitmap, &i));
+             i++) {
+            if (job_epilog_complete(job_ptr->job_id, node_ptr->name,
+                                    SLURM_SUCCESS)) {
+                completed = true;
+            }
+        }
+        return completed;
+    }
+
+    return sim_job_epilog_complete(job_ptr->job_id, "localhost", SLURM_SUCCESS);
+}
+
 
 
 int sim_slurmctrld_pthread_create (pthread_t *newthread,
@@ -258,13 +291,12 @@ void sim_complete_job(uint32_t job_id)
     unlock_slurmctld(job_write_lock1);
 
     if(error_code==SLURM_SUCCESS){
-        exit_status = sim_job_epilog_complete(job_ptr->job_id, "localhost", SLURM_SUCCESS);
+        exit_status = sim_job_epilog_complete_all_nodes(job_ptr);
         if (exit_status){
             // @todo proper handling whould include sending REQUEST_TERMINATE_JOB
             // here we skipping it
             sim_remove_active_sim_job(job_id);
-            // agent after sending REQUEST_TERMINATE_JOB will ask to run scheduler
-            sim_notify_slurmctld_nodes();
+            queue_job_scheduler();
         } else {
             sim_insert_event_rpc_epilog_complete(job_id);
         }
@@ -294,7 +326,7 @@ void sim_rpc_epilog_complete(uint32_t job_id)
 
     if(IS_JOB_COMPLETING(job_ptr)){
         lock_slurmctld(job_write_lock);
-        if (job_epilog_complete(job_ptr->job_id, "localhost", SLURM_SUCCESS))
+        if (sim_job_epilog_complete_all_nodes(job_ptr))
             run_scheduler = true;
         unlock_slurmctld(job_write_lock);
 
@@ -330,7 +362,7 @@ void sim_rpc_epilog_complete(uint32_t job_id)
 
     // MESSAGE_EPILOG_COMPLETE
     lock_slurmctld(job_write_lock);
-    if (job_epilog_complete(job_ptr->job_id, "localhost", SLURM_SUCCESS))
+    if (sim_job_epilog_complete_all_nodes(job_ptr))
         run_scheduler = true;
     unlock_slurmctld(job_write_lock);
 
@@ -521,6 +553,7 @@ int64_t sim_events_loop()
 					     (sim_node_ptr = next_node(&sim_node_i));
 					     sim_node_i++) {
 						node_did_resp(sim_node_ptr->name);
+						make_node_idle(sim_node_ptr, NULL);
 					}
 					unlock_slurmctld(sim_node_lock);
 				}
@@ -880,5 +913,3 @@ main (int argc, char **argv)
 
 	debug("%d", controller_sigarray[0]);
 }
-
-

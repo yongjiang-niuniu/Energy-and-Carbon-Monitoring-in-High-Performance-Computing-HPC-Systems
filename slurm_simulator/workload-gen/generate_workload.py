@@ -15,7 +15,8 @@ Realistic HPC workload generator for the Stanage Slurm simulator.
   * Fugaku F-DATA / NERSC / ARCHER2 负载特征分析: 大量短小作业贡献了
     作业数，少量大 MPI 作业贡献了大部分 node-hours；用户申请的 walltime
     普遍是实际用时的 2~10 倍，且集中在整点值(1h/4h/12h/24h...)；
-    少部分作业撞墙超时(TIMEOUT)或启动后迅速失败。
+    真实数据里会有少部分 TIMEOUT 或失败作业；本演示 workload 先关闭这些情况，
+    保证 140 个作业都能走到完整完成状态，便于生成 PPT 结果。
   * AI 负载(训练/微调/推理)集中在 GPU 分区，训练作业长且 GPU 利用率高，
     交互/调试作业短且频繁。
 
@@ -59,6 +60,13 @@ GPU_W = {"a100": 400.0, "h100": 350.0, "h100nvl": 400.0}
 
 # 用户申请 walltime 偏好的"整点"档位（分钟）
 ROUND_REQ_MIN = [15, 30, 60, 120, 240, 480, 720, 1440, 2880, 4320]
+# This "presentation run" keeps the workload shape but avoids jobs that trigger
+# Slurm's real time-limit kill path. The simulator has no real slurmd process to
+# acknowledge those kills, so timeout jobs can leave the controller resending
+# TERMINATE_JOB forever. Keep every simulated runtime at or below ~30 minutes
+# and always request enough walltime for the job to complete.
+MAX_SIM_WALL_S = 30 * 60
+MIN_SIM_WALL_S = 30
 
 
 def lognormal_capped(rng, median_s, sigma, cap_s, floor_s=60):
@@ -76,47 +84,52 @@ def round_up_request(actual_s, factor):
     return ROUND_REQ_MIN[-1]
 
 
+def safe_request(actual_s, rng, factor_min=1.3, factor_max=3.0):
+    """Return a requested walltime that cannot trigger Slurm TIME_LIMIT."""
+    return round_up_request(actual_s, rng.uniform(factor_min, factor_max))
+
+
+def cap_runtime(actual_s):
+    """Keep the run short while preserving relative job sizes."""
+    return int(max(MIN_SIM_WALL_S, min(actual_s, MAX_SIM_WALL_S)))
+
+
 # ---------------------------------------------------------------------------
 # 作业类别定义。每个函数返回 dict:
 #   partition, nodes, ntasks, gres(str|None), gpu_type, gpus_total,
-#   actual_s(实际运行秒), req_min(申请分钟), outcome(completed|failed|timeout)
+#   actual_s(实际运行秒), req_min(申请分钟), outcome(completed)
 # ---------------------------------------------------------------------------
 
 def gen_htc_short(rng):
     n = rng.choices([1, 4, 8, 16, 32], weights=[25, 25, 25, 15, 10])[0]
-    if rng.random() < 0.08:  # 启动后迅速失败(配置错/输入错)
-        actual = rng.randint(20, 300)
-        outcome = "failed"
+    if rng.random() < 0.08:  # very short setup or test jobs
+        actual = rng.randint(30, 300)
     else:
         actual = lognormal_capped(rng, median_s=25 * 60, sigma=1.1, cap_s=3 * 3600)
-        outcome = "completed"
-    req = round_up_request(actual, rng.uniform(1.5, 6.0))
+    actual = cap_runtime(actual)
+    req = safe_request(actual, rng, 1.5, 6.0)
     return dict(partition="standard", nodes=1, ntasks=n, gres=None,
                 gpu_type=None, gpus_total=0,
-                actual_s=actual, req_min=req, outcome=outcome)
+                actual_s=actual, req_min=req, outcome="completed")
 
 
 def gen_mpi_physics(rng):
     nodes = rng.choices([2, 4, 8, 16, 32], weights=[30, 30, 20, 15, 5])[0]
-    if rng.random() < 0.05:  # 撞墙超时: 申请时长小于实际需要
-        req = rng.choice([240, 480, 720])
-        actual = int(req * 60 * rng.uniform(1.05, 1.3))
-        outcome = "timeout"
-    else:
-        actual = lognormal_capped(rng, median_s=3.5 * 3600, sigma=0.9,
-                                  cap_s=18 * 3600, floor_s=600)
-        req = round_up_request(actual, rng.uniform(1.3, 4.0))
-        outcome = "completed"
+    actual = lognormal_capped(rng, median_s=3.5 * 3600, sigma=0.9,
+                              cap_s=MAX_SIM_WALL_S, floor_s=600)
+    actual = cap_runtime(actual)
+    req = safe_request(actual, rng, 1.3, 4.0)
     return dict(partition="standard", nodes=nodes, ntasks=nodes * 64,
                 gres=None, gpu_type=None, gpus_total=0,
-                actual_s=actual, req_min=req, outcome=outcome)
+                actual_s=actual, req_min=req, outcome="completed")
 
 
 def gen_mpi_capability(rng):
-    nodes = rng.choices([64, 96, 128], weights=[60, 30, 10])[0]
-    actual = lognormal_capped(rng, median_s=6 * 3600, sigma=0.6,
-                              cap_s=16 * 3600, floor_s=3600)
-    req = round_up_request(actual, rng.uniform(1.3, 2.5))
+    nodes = rng.choices([64, 96], weights=[70, 30])[0]
+    actual = lognormal_capped(rng, median_s=3 * 3600, sigma=0.6,
+                              cap_s=MAX_SIM_WALL_S, floor_s=1800)
+    actual = cap_runtime(actual)
+    req = safe_request(actual, rng, 1.3, 2.5)
     return dict(partition="standard", nodes=nodes, ntasks=nodes * 64,
                 gres=None, gpu_type=None, gpus_total=0,
                 actual_s=actual, req_min=req, outcome="completed")
@@ -125,8 +138,9 @@ def gen_mpi_capability(rng):
 def gen_ai_train_a100(rng):
     nodes = rng.choices([1, 2], weights=[70, 30])[0]
     actual = lognormal_capped(rng, median_s=5 * 3600, sigma=0.8,
-                              cap_s=20 * 3600, floor_s=1800)
-    req = round_up_request(actual, rng.uniform(1.5, 3.0))
+                              cap_s=MAX_SIM_WALL_S, floor_s=1800)
+    actual = cap_runtime(actual)
+    req = safe_request(actual, rng, 1.5, 3.0)
     return dict(partition="gpu", nodes=nodes, ntasks=nodes * 48,
                 gres="gpu:a100:4", gpu_type="a100", gpus_total=nodes * 4,
                 actual_s=actual, req_min=req, outcome="completed")
@@ -141,7 +155,8 @@ def gen_ai_dev_gpu(rng):
         ngpu = rng.choices([1, 2], weights=[80, 20])[0]
     actual = lognormal_capped(rng, median_s=20 * 60, sigma=0.9,
                               cap_s=90 * 60, floor_s=120)
-    req = round_up_request(actual, rng.uniform(1.5, 4.0))
+    actual = cap_runtime(actual)
+    req = safe_request(actual, rng, 1.5, 4.0)
     return dict(partition=part, nodes=1, ntasks=8 * ngpu,
                 gres="gpu:%s:%d" % (gtype, ngpu), gpu_type=gtype,
                 gpus_total=ngpu, actual_s=actual, req_min=req,
@@ -150,8 +165,9 @@ def gen_ai_dev_gpu(rng):
 
 def gen_llm_h100nvl(rng):
     actual = lognormal_capped(rng, median_s=8 * 3600, sigma=0.6,
-                              cap_s=20 * 3600, floor_s=2 * 3600)
-    req = round_up_request(actual, rng.uniform(1.3, 2.0))
+                              cap_s=MAX_SIM_WALL_S, floor_s=2 * 3600)
+    actual = cap_runtime(actual)
+    req = safe_request(actual, rng, 1.3, 2.0)
     return dict(partition="gpu-h100-nvl", nodes=1, ntasks=96,
                 gres="gpu:h100nvl:4", gpu_type="h100nvl", gpus_total=4,
                 actual_s=actual, req_min=req, outcome="completed")
@@ -159,8 +175,9 @@ def gen_llm_h100nvl(rng):
 
 def gen_bigmem(rng):
     actual = lognormal_capped(rng, median_s=2 * 3600, sigma=0.9,
-                              cap_s=12 * 3600, floor_s=600)
-    req = round_up_request(actual, rng.uniform(1.5, 4.0))
+                              cap_s=MAX_SIM_WALL_S, floor_s=600)
+    actual = cap_runtime(actual)
+    req = safe_request(actual, rng, 1.5, 4.0)
     n = rng.choice([16, 32, 64])
     return dict(partition="bigmem", nodes=1, ntasks=n, gres=None,
                 gpu_type=None, gpus_total=0,
@@ -169,8 +186,9 @@ def gen_bigmem(rng):
 
 def gen_hugemem(rng):
     actual = lognormal_capped(rng, median_s=4 * 3600, sigma=0.7,
-                              cap_s=12 * 3600, floor_s=1800)
-    req = round_up_request(actual, rng.uniform(1.5, 3.0))
+                              cap_s=MAX_SIM_WALL_S, floor_s=1800)
+    actual = cap_runtime(actual)
+    req = safe_request(actual, rng, 1.5, 3.0)
     return dict(partition="hugemem", nodes=1, ntasks=64, gres=None,
                 gpu_type=None, gpus_total=0,
                 actual_s=actual, req_min=req, outcome="completed")
@@ -179,7 +197,7 @@ def gen_hugemem(rng):
 CLASSES = [
     ("htc_short",      38, gen_htc_short),
     ("mpi_physics",    22, gen_mpi_physics),
-    ("mpi_capability",  4, gen_mpi_capability),
+    ("mpi_capability",  2, gen_mpi_capability),
     ("ai_train_a100",  12, gen_ai_train_a100),
     ("ai_dev_gpu",     13, gen_ai_dev_gpu),
     ("llm_h100nvl",     3, gen_llm_h100nvl),
