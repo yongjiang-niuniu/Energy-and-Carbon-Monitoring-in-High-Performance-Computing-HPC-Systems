@@ -38,8 +38,9 @@ slurm_simulator/stanage-sim/job_results.csv
 slurm_simulator/stanage-sim/run_summary_realistic_*.txt
 slurm_simulator/stanage-sim/.!*
 
-# Literature PDFs under 论文/ are tracked; other PDFs stay local
+# Literature PDFs and the selected dissertation draft are tracked
 *.pdf
+!dissertation/Stanage_Dissertation_Overleaf_20260910.pdf
 !论文/
 !论文/**/
 !论文/*.pdf

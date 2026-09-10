@@ -4,6 +4,8 @@ A research workflow for connecting **HPC scheduling events to per-job energy and
 
 **中文概述：** 这个项目研究如何从高性能计算任务的调度记录估算能耗与碳排放，包含合成工作负载、Slurm 模拟配置、任务级分析和研究笔记。当前仓库保存研究阶段的模拟材料，能耗为模型估计值，毕业论文最终稿尚未作为正式提交归档。
 
+**Dissertation reading copy:** the [10 September 2026 working draft](dissertation/README.md) contains the later trace-driven study's results and conclusions. This repository's code remains the earlier synthetic-workload snapshot described below; it is not the implementation version used for all experiments in that manuscript. The PDF is an Overleaf working draft, not a verified official university submission.
+
 ## Project at a glance
 
 | Aspect | Details |
@@ -14,6 +16,7 @@ A research workflow for connecting **HPC scheduling events to per-job energy and
 | Inputs | Synthetic job profiles, cluster configuration, simulator controller logs |
 | Outputs | Per-job scheduling, energy and carbon CSVs; aggregate research summaries |
 | Preserved demonstration | 140-job simulation export dated 30 July 2026 |
+| Dissertation | 92-page Overleaf working draft, 10 September 2026; later study, separate from the archived code version |
 
 ## What it does
 
@@ -46,6 +49,7 @@ synthetic job profiles + replay events
 | [Research notes](md文件/) | Architecture, workload and carbon-model discussion |
 | [Literature index](论文/文献索引.md) | Reading list and literature context |
 | [Documentation index](docs/README.md) | Suggested reading order and reproduction guidance |
+| [Dissertation reading copy](dissertation/README.md) | Later manuscript, version boundary and PDF integrity information |
 
 Project configuration and analysis live inside a tree that also contains the underlying Slurm distribution. The complete bundled scheduler is not original dissertation code.
 
