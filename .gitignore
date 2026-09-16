@@ -1,53 +1,17 @@
-# macOS local files
-.DS_Store
-
-# Private supervisor/email materials
-和导师的对话/
-HPC项目重要资料_邮件附件候选/
-
-# Local credentials and secrets
-*.local.json
-*.secret.json
-*credentials*.json
-*token*.json
-.env
-.env.*
-
-# Python/local environments
 __pycache__/
 *.py[cod]
+.pytest_cache/
 .venv/
-venv/
-
-# Build outputs and logs
-build/
-dist/
+.DS_Store
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
 *.log
-core
-
-# Local Slurm simulator build/run noise
-slurm_simulator/build-sim/
-slurm_simulator/demo-sim/
-slurm_simulator/stanage-sim/*.log
-slurm_simulator/stanage-sim/slurmctld.*
-slurm_simulator/stanage-sim/sched.log
-slurm_simulator/stanage-sim/status.txt
-slurm_simulator/stanage-sim/analyze_stdout.txt
-slurm_simulator/stanage-sim/analyze_stderr.txt
-slurm_simulator/stanage-sim/job_results.csv
-slurm_simulator/stanage-sim/run_summary_realistic_*.txt
-slurm_simulator/stanage-sim/.!*
-
-# Literature PDFs and the selected dissertation draft are tracked
-*.pdf
-!dissertation/Stanage_Dissertation_Overleaf_20260910.pdf
-!论文/
-!论文/**/
-!论文/*.pdf
-!论文/*.md
-!论文/**/*.pdf
-!论文/**/*.md
-
-# Local PDF extraction/cache (not for version control)
-.paper_text/
-.pylibs/
+*.out
+*.toc
+*.lof
+*.lot
+latex/main.pdf
+_local/

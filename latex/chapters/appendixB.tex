@@ -1,0 +1,9 @@
+\chapter{Complete five-date results}\label{app:daily-results}
+The following tables contain all seven policies on all five dates. They preserve the same evaluation cohort within each date and retain negative and zero-action results. Primary carbon uses median values from three baseline replays and two Adaptive replays; the other policies have one replay per date. Paired waiting is calculated for matching evaluation-job IDs, then summarised across replay pairs. A dagger identifies audited zero-action cases with executable inputs identical to baseline: their differences are replay variation rather than an intentional-delay effect.
+
+Carbon values describe the modelled shared queue, not per-job meter readings. Dividing a shared saving by the evaluation-job count does not uniquely attribute carbon to those jobs. Alternative occupancy percentages test sensitivity to the model; they are not independent measurements. Carry-in and execution tails can overlap between dates, so these tables cannot be read as a continuous five-day or annual emissions account.
+
+Table~\ref{tab:final-daily-carbon} provides absolute and percentage carbon changes, including the primary whole-cage percentage. The service table separates direct hold, actual added total waiting and concentration of user burden. A P95 of job-paired wait differences is not the difference between two population P95 values. Companion CSVs retain full precision and the extra model/scope fields; the source register is \path{supporting/final_results_source_manifest_20260910.csv}.
+\input{assets/tables/table10_final_daily_carbon}
+\clearpage
+\input{assets/tables/table11_final_daily_wait_burden}

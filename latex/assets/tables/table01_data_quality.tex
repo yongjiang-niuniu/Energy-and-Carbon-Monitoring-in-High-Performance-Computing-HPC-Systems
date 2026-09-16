@@ -1,0 +1,21 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption[Archive processing and data quality]{Accounting archive processing and selected quality exceptions. Exception rows overlap; only the first six rows describe the sequential cohort accounting.}
+\label{tab:table01-data-quality}
+\begin{tabular}{lr}
+\toprule
+Processing step or exception & Count \\
+\midrule
+Raw accounting rows & 4,114,698 \\
+Duplicate rows removed & 14,576 \\
+Invalid JobIDRaw excluded & 1 \\
+Globally unique valid jobs & 4,100,121 \\
+Outside 2025 or missing Submit & 1,320 \\
+Retained 2025 submission cohort & 4,098,801 \\
+Missing Start in retained cohort & 92,536 \\
+Negative eligible wait & 7 \\
+Invalid requested GPU counts & 2 \\
+\bottomrule
+\end{tabular}
+\end{table}

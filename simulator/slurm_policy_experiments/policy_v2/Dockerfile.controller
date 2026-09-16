@@ -1,0 +1,2 @@
+FROM slurm-sim-policy-v2:20260910
+COPY . /opt/policy-v2

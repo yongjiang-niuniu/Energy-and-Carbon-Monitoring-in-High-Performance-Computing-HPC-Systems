@@ -1,0 +1,2 @@
+-e submit_batch_job -dt 0 | --uid=alice -J jobid_1 -N 1 -n 1 -t 1 -sim-walltime 5 pseudo.job -sleep 5
+-e submit_batch_job -dt 1 | --uid=bob -J jobid_2 -N 1 -n 1 -t 1 -sim-walltime 3 pseudo.job -sleep 3

@@ -1,0 +1,320 @@
+\chapter{Methodology, Design and Implementation}\label{ch:method}\label{ch:implementation}
+\section{Experimental design}
+\subsection{Daily cohorts and carry-in reconstruction}\label{sec:cohort-reconstruction}
+The current multi-day design uses 13, 15 and 18 November and 9 and 10 December 2025, each beginning at 00:00 UTC. Dates were selected from calendar and trace availability before inspection of the new policy outcomes. The set includes weekdays, a weekend date and two months. It is a designed case-study sample, not a random sample of the year.
+
+For each date, supported completed jobs eligible in the following 24 hours form the evaluation cohort under the existing partition, resource and validity filters. The runtime cap is 96 hours. One evaluation job was shortened from 847,856 to 345,600 seconds by this cap, identically in every policy for its date. Completion therefore means completion of the configured workloads. A full-day replay covers the eligible population within the declared filters, not every production record. The work continues through queue drainage; it is not stopped after the 24-hour arrival period.
+
+Three carry-in categories represent the pressure already present at the boundary. Running jobs are admitted first with their remaining runtime. Jobs already eligible but still queued are released at the boundary. Earlier-submitted held or dependency-bound jobs enter at their recorded later eligibility. Carry-in classification takes precedence if definitions overlap. Carry-in jobs cannot be delayed by a policy and do not enter the evaluation waiting percentiles, but their resource occupation contributes to energy and carbon accounting.
+
+The replay uses a finite arrival window and then lets the queue drain. Apart from held jobs already in the carry-in set, normal arrivals after the evaluation day are not added. Later execution therefore faces different background competition from an operating cluster. Matching these finite workloads provides a controlled case comparison, but cannot forecast a continuous production workload.
+
+This reconstruction gives each policy the same non-empty starting conditions. Original priority ages, exact historical node placement, reservations and private fair-share state remain unavailable. Replay diagnostics assess the resulting differences from production behaviour. The word ``exact'' in a script name refers to its construction procedure, not a claim that all production state has been recovered.
+\IfFileExists{supporting/figures/fig04_replay_design.tex}{\input{supporting/figures/fig04_replay_design.tex}}{}
+\IfFileExists{supporting/figures/fig10_multiday_cohorts.tex}{\input{supporting/figures/fig10_multiday_cohorts.tex}}{}
+\FloatBarrier
+
+\subsection{Simulated cluster and flexibility}
+The trace inventory contains 202 worker-node names, grouped into CPU, A100, H100 and H100-NVL classes for simulation. Public Stanage documentation supplies contextual hardware information~\cite{sheffieldStanage}; mapping it onto the 2025 trace is a modelling step, because a current web page is not a timestamped historical inventory. Node and partition configuration are held fixed within the comparison.
+
+Table~\ref{tab:fixed-simulator-configuration} records the main fixed settings. Holding these settings constant between policies is not the same as reproducing Stanage's complete production priority configuration. In particular, the replay uses basic priority rather than a reconstructed history of fair-share scores and reservations.
+\begin{table}[htbp]\centering\small
+\caption{Fixed simulator settings and reconstruction limits.}\label{tab:fixed-simulator-configuration}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.25\linewidth}>{\raggedright\arraybackslash}p{0.68\linewidth}@{}}\toprule
+Setting & Configuration used in the comparison\\\midrule
+Scheduling & \texttt{sched/backfill}; backfill interval 30 seconds.\\
+Resource allocation & \texttt{select/cons\_tres} with \texttt{CR\_CPU\_Memory}.\\
+Priority & \texttt{priority/basic}; no reconstructed production fair-share history.\\
+Clock & Simulator scale 100, held fixed across the final campaign.\\
+Cluster inventory & 202 trace-observed worker names; fixed resource-class and partition mapping.\\
+Initial work & Running, queued and held carry-in; historical placement and priority ages are not fully restored.\\
+Unavailable state & Production reservations, administrator actions and complete accounting associations are not reconstructed.\\\bottomrule
+\end{tabular}
+\end{table}
+
+A target probability of 30\% assigns flexibility to eligible non-interactive jobs with a fixed seed of 42. The realised fraction can differ from exactly 30\% on an individual date. The same assignment is reused for every policy on a date. This provides a controlled intervention population, but it does not identify actual user willingness to wait. Policy findings must therefore be qualified by the assumed flexibility fraction. No job is killed, checkpointed, migrated or given fewer resources to obtain a favourable result.
+
+Temporal-shifting studies treat flexibility and interruption assumptions as determinants of the available opportunity~\cite{wiesner2021wait,sukprasert2024limitations}. The fixed assignment here is an experimental control for that opportunity, rather than a forecast of adoption by real users.
+
+\subsection{Policies and information access}
+The main experiment compares seven representative policies against normal admission. B1 runtime shifting searches within four hours using carbon exposure across the given runtime. B2 delays flexible work when both carbon intensity and projected load are high. Adaptive Balanced combines runtime carbon, waiting and congestion with a runtime-proportional delay budget. A direct hybrid uses B2 during 08:00--18:00 UTC and runtime-aware B1 otherwise. The history-only and low-impact history-only variants estimate decision runtime and load from earlier months. Dynamic Forecast Balanced uses the completed baseline schedule as an oracle diagnostic.
+
+For November, history-based decision tables use January--October; for December, they use January--November. This temporal restriction applies to predictors. The simulator still needs a runtime for execution, and the distinction is preserved in the workload and policy audit fields. The observed-runtime methods and oracle method are informative counterfactuals; they cannot be labelled as tested online predictors.
+
+The representative oracle and history configurations also differ in minimum-saving thresholds, waiting and congestion weights, and carbon-return gates. Any difference between them may therefore reflect both information access and policy safeguards. Isolating the effect of prediction error would require an information-only ablation with those settings held constant.
+
+All methods use the same historical regional carbon curve. The saved series does not record which forecast was available when each production decision would have been made. The label ``history-only'' therefore applies to runtime and load training information, not to every input in the experiment. Earlier forecast-noise screens test sensitivity to assumed errors; they do not measure forecast accuracy.
+
+Table~\ref{tab:frozen-policy-information} collects the information conditions and key frozen parameters before the implementation details in Chapter~\ref{ch:implementation}. In particular, the oracle and history rows expose their different safeguards, so the information comparison can be read with those additional differences in view.
+\input{assets/tables/table08_frozen_policy_information}
+\FloatBarrier
+
+
+\section{Carbon and service accounting}
+\subsection{Operational carbon model}
+The primary model translates interval occupancy into a power scenario and integrates it with regional carbon intensity. For class $h$ and half-hour interval $k$, CPU and GPU fractions are calculated from the occupied resource-seconds divided by configured capacity-seconds. The class index is
+\begin{equation}
+U_{h,k}=\min\{1,\max(u^{\mathrm{CPU}}_{h,k},u^{\mathrm{GPU}}_{h,k})\},\qquad
+U_k=\sum_h\frac{N_h}{202}U_{h,k}.
+\end{equation}
+The GPU fraction is zero for CPU-only classes. $N_h$ is the number of nodes in the class. This index measures normalised allocation, not processor activity or electrical power. Equal node weights are a transparent simplification rather than a claim that CPU and GPU nodes draw equal power.
+
+Approximate whole-cage values supplied in supervision define
+\begin{equation}\label{eq:power}
+P_k=140+55U_k\quad\mathrm{kW}.
+\end{equation}
+The 140 kW term is the fixed scenario baseline. The supplied 195 kW value describes approximate regular-use power, not a measurement with every resource fully occupied. Setting it at $U_k=1$ is the project's normalisation choice. No occupancy observation was supplied alongside that value, so Equation~\ref{eq:power} is not a curve fitted to two measured power--occupancy points. These inputs cover equipment inside the cage, including compute, storage and networking. Facility overhead outside that boundary has not been quantified, so no additional PUE multiplier is applied.
+
+The general energy-to-carbon conversion follows established accounting practice. Green Algorithms gives its energy estimate in Equation~(1) on PDF page 7 and carbon conversion in Equation~(3) on PDF page 8~\cite{lannelongue2021green}. Carbontracker gives energy and carbon relations in Equations~(2)--(3) on PDF page 8~\cite{anthony2020carbontracker}. These sources support the conversion, not the project's 140/195 kW endpoints or occupancy weights.
+
+For intensity $I_k$ in grams of \co{} per kWh and duration $\Delta t_k$ in hours, the load-dependent and whole-cage estimates are
+\begin{align}
+C_{\mathrm{load}}&=\frac{1}{1000}\sum_k 55U_k\Delta t_k I_k,\label{eq:carbonload}\\
+C_{\mathrm{cage}}&=\frac{1}{1000}\sum_k (140+55U_k)\Delta t_k I_k.\label{eq:carboncage}
+\end{align}
+Both return kilograms of \co. NESO describes its electricity-intensity signal as generation \co{} intensity~\cite{nesoCarbonIntensity,nesoAPI}. Legacy project columns containing \texttt{co2e} are retained in source provenance, but this dissertation does not turn that signal into a measured full greenhouse-gas lifecycle footprint.
+\input{supporting/figures/fig11_historical_carbon_signals}
+\FloatBarrier
+
+Two sensitivity indices are reported: capped requested-node occupancy and distinct allocated-node occupancy. Requested nodes can overcount shared nodes before capping; distinct allocation merges overlapping intervals on each host. The latter avoids that counting artefact but remains sensitive to simulated node placement.
+
+Slurm node-sharing studies show how placement and sharing configuration affect the relationship between job requests and occupied hosts~\cite{simakov2018sharing}. The three indices describe different aspects of allocation; they are not independent electrical measurements. Reporting both sensitivity indices alongside the primary index checks whether a favourable result depends on one allocation representation.
+
+This analysis tests sensitivity to a power-model input, reflecting the hardware and workload dependence discussed in the HPC modelling literature~\cite{obrien2017survey}. Without an independent power series for calibration, it cannot provide a confidence interval for measured power.
+
+Figure~\ref{fig:carbon-accounting-boundary} shows how the three occupancy representations enter the same accounting calculation. Keeping the physical boundary and the fixed component visible helps distinguish a load-related saving from a whole-cage percentage.
+\input{supporting/figures/fig16_carbon_accounting_boundary}
+\FloatBarrier
+
+Final accounting uses the same interval for every required replay of a date: from the date boundary to the latest modelled completion, rounded to the carbon interval grid. The accounting start is the intended release plus the non-negative logged scheduler wait; the modelled end adds the configured runtime. These are re-anchored intervals, not the unadjusted logged start and completion times. Section~\ref{sec:time-anchoring} defines the transformation, and Section~\ref{sec:submission-residual-audit} quantifies its submission residuals. The fixed 140 kW integral cancels in a paired absolute carbon difference, but remains in the denominator of a whole-cage percentage. A load-dependent reduction is therefore not the same percentage reduction in total cage emissions.
+
+\begin{table}[htbp]\centering\small
+\caption{Symbols and units in the carbon calculation.}\label{tab:carbon-symbols}
+\begin{tabular}{@{}llp{0.60\linewidth}@{}}\toprule
+Symbol & Unit & Meaning\\\midrule
+$h$, $k$ & -- & Resource class and half-hour accounting interval.\\
+$N_h$ & nodes & Number of simulated nodes in class $h$; total 202.\\
+$u^{\mathrm{CPU}}_{h,k}$, $u^{\mathrm{GPU}}_{h,k}$ & -- & Occupied resource-seconds divided by class capacity-seconds.\\
+$U_{h,k}$, $U_k$ & -- & Class occupancy index and node-weighted cluster index, each bounded by zero and one.\\
+$P_k$ & kW & Scenario power, not a job-level measurement.\\
+$\Delta t_k$ & h & Duration accounted for in interval $k$.\\
+$I_k$ & g \co/kWh & Regional electricity-generation carbon intensity.\\
+$C_{\mathrm{load}}$, $C_{\mathrm{cage}}$ & kg \co & Load-dependent and fixed-plus-load carbon estimates.\\\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Time anchoring and service metrics}\label{sec:time-anchoring}
+For an evaluation job $j$, let $s_j$, $e_j$ and $r_j$ be source submission, eligibility and intended policy release, in seconds relative to the date boundary. Simulator logs use a separate virtual-clock origin. Let $T_j^{\mathrm{sub}}$ and $T_j^{\mathrm{start}}$ denote the raw submission and start log timestamps in seconds. The analyser estimates a common origin for each replay as
+\begin{equation}
+\theta=\operatorname{median}_i(T_i^{\mathrm{sub}}-r_i),\qquad
+\ell_j=T_j^{\mathrm{sub}}-\theta,\qquad b_j=T_j^{\mathrm{start}}-\theta.
+\end{equation}
+The index $i$ covers jobs with a recorded submission in that replay, including carry-in. Thus $\ell_j$ and $b_j$ are log-aligned offsets. The submission residual is
+\begin{equation}\label{eq:submission-residual}
+\epsilon_j=\ell_j-r_j.
+\end{equation}
+It measures the remaining difference after the common median alignment, not a timezone difference. For evaluation jobs, the reported components of waiting are
+\begin{align}
+D_j&=r_j-e_j, & Q_j&=b_j-\ell_j,\\
+W_j&=(e_j-s_j)+D_j+Q_j.
+\end{align}
+$D_j$ is deliberate policy delay, $Q_j$ logged scheduler waiting and $W_j$ reported total user wait. Hence \mbox{$W_j=(b_j-s_j)-\epsilon_j$}, rather than log-aligned elapsed time from source submission. Moving one job can reorder the queue and change other jobs' waiting.
+
+Carry-in jobs are excluded from these evaluation waiting summaries. Their reconstructed release and eligibility offsets can be set to zero at the boundary even when source eligibility was earlier; the source dependency interval is retained separately. Source and reconstructed eligibility are therefore not interchangeable for carry-in. Carbon accounting includes both cohorts and uses each reconstructed release $r_j$, the start offset $m_j$ and configured execution duration $R_j$:
+\begin{equation}\label{eq:anchored-start}
+m_j=r_j+\max(Q_j,0),\qquad \text{modelled end offset}=m_j+R_j.
+\end{equation}
+For non-negative $Q_j$, $m_j-b_j=-\epsilon_j$. Different residuals therefore shift jobs by different amounts; this is not necessarily one harmless translation of the entire schedule. It can alter both carbon-interval exposure and modelled overlap between jobs. The retained carbon and waiting results use this original definition. Its effect relative to a consistently log-aligned alternative has not yet been quantified, and the residual audit is not a replacement carbon calculation.
+
+Negative $Q_j$ values are retained in reported waiting but clipped only in the carbon-start equation. They indicate inconsistent log ordering, not physically negative waiting. Section~\ref{sec:negative-wait-audit} reports the affected records; no original waiting value or carbon result has been replaced.
+
+All time quantities here are in seconds. $j$ and $i$ index jobs, $\theta$ is the estimated replay origin, $T_j^{\mathrm{sub}},T_j^{\mathrm{start}}$ are raw log timestamps, $\ell_j,b_j$ their aligned offsets, and $\epsilon_j$ the submission residual. $s_j,e_j,r_j$ describe source or intended events; $D_j,Q_j,W_j$ describe waiting; $m_j$ is the carbon-model start and $R_j$ the configured duration. Figure~\ref{fig:job-wait-timeline} shows the idealised components when the submission residual is zero.
+\input{supporting/figures/fig13_job_wait_timeline}
+\FloatBarrier
+
+Waiting percentiles, maxima, turnaround and slowdown use the same evaluation cohort. The existing throughput field instead divides all completed replay jobs, including carry-in, by the full replay span; it is reported with that denominator rather than called evaluation-only throughput. The implemented slowdown indicator is $(R_j+W_j)/\max(R_j,60\,\mathrm{s})$. Unlike definitions that additionally clamp the ratio to one, this implementation may produce values below one for short jobs; the equation states exactly what is computed. User-level reporting includes cumulative policy delay, the number of affected jobs, maximum burden and the largest user's share of total policy delay. The count delayed longer than execution runtime is reported separately from compliance with a predictor-based budget.
+
+For a policy $p$ and baseline $0$, carbon reduction is
+\begin{equation}
+S_p=100\left(1-\frac{C_p}{C_0}\right)\%.
+\end{equation}
+Positive values mean reduction and negative values mean increase. Carbon saved per cumulative policy-wait hour can support efficiency comparisons, but is undefined when no delay is imposed and cannot replace the absolute reduction and burden distributions.
+
+\section{Comparison and validity}
+\subsection{Repetition and multi-day interpretation}
+Each date received three baseline runs, seven policy runs and one additional Adaptive Balanced run, giving 55 final completed replays. The original plan interleaved baselines with a rotated policy sequence. A recorded execution amendment increased concurrency to five isolated containers across two virtual machines, using the same pinned image and clock scale of 100. The additional environment controls were diagnostic runs outside the 55. Dates, job populations, policy parameters and acceptance rules did not change. Controls on 13 November supported the amended execution on that configuration; they do not establish negligible variation on every date.
+
+The baseline median is the primary paired carbon reference, and the median of two replays represents Adaptive. Repeat ranges show the variation observed within these runs. Each other policy has one replay per date: five different dates do not amount to five repeats of the same scenario. Baseline repeats cannot fully characterise those policies' run-to-run variability.
+\input{assets/tables/table05_campaign_inputs}
+
+The allocation of repeated and single runs is shown in Figure~\ref{fig:multiday-design-matrix}. All planned cells were completed. Failed or superseded attempts remain in the audit archive and are not counted as extra policy observations.
+\input{supporting/figures/fig17_multiday_design_matrix}
+\FloatBarrier
+
+The frozen working screen requires five valid dates, material positive primary-model change on at least four, and a worst-day increase no greater than 0.1\%. A material positive day must strictly exceed the maximum of 0.05\%, the baseline repeat range and the available policy repeat range, and pass the conservative minimum-baseline versus maximum-policy comparison. Both repeat ranges are expressed as percentages of median baseline carbon. The screen also requires positive baseline-carbon-weighted aggregate reduction and positive mean direction when any one date is left out. These are project screening rules, not operational standards or significance tests. Their thresholds were not relaxed after inspecting the results.
+
+Service impact is assessed separately. A lower-impact date requires a P95 increase of at most five minutes, no policy delay longer than configured runtime, at most 60 cumulative delay minutes and two delayed jobs per user, and a largest-user burden share of at most 40\%. Carbon stability does not replace these service measures.
+
+Each date retains its natural job count. Equal-day means, medians and worst dates summarise the five cases. A separate pooled percentage uses the sum of baseline carbon as its denominator. Averaging daily P95 values averages percentiles; it does not produce a pooled job-level P95. Carry-in and execution tails may overlap, so the dates are neither independent random observations nor disjoint windows from which to annualise savings.
+
+The user-centred summary first normalises each day's shared carbon difference by its evaluation-job count, then weights dates equally:
+\begin{align}
+g_{p,d}&=\frac{1000(C_{0,d}-C_{p,d})}{N_d},\label{eq:normalised-carbon}\\
+w_{p,d}&=\operatorname{median}_{a,b}\left[\frac{1}{N_d}\sum_{j\in J_d}
+\left(W^{(a)}_{p,d,j}-W^{(b)}_{0,d,j}\right)\right],\label{eq:paired-wait}\\
+\overline g_p&=\frac{1}{5}\sum_d g_{p,d},\qquad
+\overline w_p=\frac{1}{5}\sum_d w_{p,d}.\label{eq:equal-day}
+\end{align}
+Here $p$ is a policy, $d$ a date, $J_d$ its evaluation cohort and $N_d=|J_d|$ its size. $C_{0,d}$ and $C_{p,d}$ are median shared-queue carbon estimates in kg \co; $a$ and $b$ index policy and baseline repeats. $W_{p,d,j}^{(a)}$ is job $j$'s total waiting in seconds. Thus $g_{p,d}$ has units of g \co{} per evaluation job and $w_{p,d}$ has units of seconds per evaluation job. Carbon includes carry-in and queue-wide effects: $g_{p,d}$ is a scale-normalised cluster difference, not an individual job footprint. Wait differences are calculated for matching job IDs within each replay pair before taking the median pair statistic. Positive-only added wait replaces each difference inside the sum by its maximum with zero, exposing harm that earlier starts elsewhere could otherwise offset.
+
+\subsection{Validity and completion requirements}
+Workload identity, resource invariants, carry-in membership, permitted release changes, complete carbon coverage and terminal job completion are checked before a replay enters the comparison. An incomplete date remains visible rather than becoming zero reduction or disappearing from the five-date denominator. Carbon coverage is provisioned for 14 days; insufficient coverage causes an error rather than interpolation or zero filling.
+
+The frozen manifest and retained deviations support the distinction between planned analysis and later exploration encouraged in research-computing guidance~\cite{souter2023recommendations}. This is a documented local plan, not an externally registered preregistration. Additional tuning after inspecting the new outcomes would need to be identified as a subsequent development stage.
+
+Chapter~\ref{ch:discussion} assesses the remaining modelling and generalisation limits.
+
+
+\section{Pipeline architecture}
+The pipeline separates data preparation, admission decisions, simulation and evaluation. This allows the inputs to each decision to be inspected and the same completed replay to be analysed under several occupancy models. It produces a workload profile, simulator configuration, event stream, policy decision audit, terminal job log and interval and result summaries. The manifest records parameters and content hashes, since a policy name alone is not enough to identify an experiment.
+
+The implementation began with small simulator examples and then moved to trace-based workloads. Early synthetic jobs helped test events, virtual users, partitions and multi-node requests. These fixtures tested the implementation; they provided no evidence of Stanage carbon reductions. The empirical comparisons in this dissertation use trace-derived workloads, with small fixtures reported separately from completed experimental runs.
+
+Figure~\ref{fig:system-pipeline} locates the policy generator relative to the simulator and accounting stages. The separate oracle return path identifies where completed-baseline information enters that diagnostic variant.
+\input{supporting/figures/fig14_system_pipeline}
+
+\section{Trace conversion and event generation}
+The workload generator reads the relevant archive period and constructs a profile with source timing, resource class, requested CPU/GPU/node resources, a pseudonymous user and the execution runtime. The profile also retains source time limits and explicit UTC epoch information. Event offsets are interpreted relative to this epoch, avoiding ambiguous alignment between simulated time, carbon intervals and original timestamps.
+
+An admission decision changes the release offset while leaving resources, identity and runtime unchanged. Events are then regenerated in chronological order and passed to the simulator with \texttt{slurm.conf}, \texttt{sim.conf}, \texttt{gres.conf} and virtual-user definitions. The full profile is checked during comparison, because equal job counts alone can conceal differences in membership or resources.
+
+The carry-in builder identifies the categories defined in Section~\ref{sec:cohort-reconstruction}. Running work has admission precedence and receives the remaining execution duration. Queued work enters at the evaluation boundary. Held work retains its later eligibility. The carry-in audit checks category membership, release offsets, absence of policy delay and completion. It also measures running-job startup tolerance, since a simulated release at the boundary does not guarantee an identical historical allocation immediately afterwards.
+
+\section{Slurm integration}
+Slurm backfill and resource allocation determine logged starts after admission~\cite{schedmdScheduling}. All policies use the same simulated priority and resource settings in Table~\ref{tab:fixed-simulator-configuration}; they do not reproduce Stanage's complete production fair-share history. A job admitted during a low-intensity interval can still start later if resources are unavailable. The implementation records planned release and logged start separately. Post-replay carbon accounting then applies the time anchoring in Section~\ref{sec:time-anchoring}; it uses neither the policy's predicted saving nor unadjusted log timestamps as its result.
+
+Local development included correcting a seconds-to-microseconds conversion in the scheduler source and stabilising the simulator clock scale at 100. Runs are executed with a fixed container image. The runner inspects unique submission, start and completion events and checks that no expected work times out. Some earlier runs terminated abnormally after the final completion event, which motivated checking event completeness in addition to process status. Neither a zero process exit nor a final log line alone establishes a valid result. The relevant run diagnostics are retained with the evidence.
+
+The simulator runs real scheduling code, but replaces scientific application execution with simulated events. It captures scheduling and allocation interactions without measuring application activity, GPU kernels or node electrical demand. Energy analysis therefore remains a separate scenario model.
+
+\section{Admission rules}
+The three given-runtime rules offer a direct mechanism comparison in Figure~\ref{fig:policy-mechanism-comparison}. They receive the same type of job and historical carbon input, but differ in which release conditions they evaluate and how they limit waiting. The common lower stage is Slurm replay, where the realised start and allocation are determined.
+\input{supporting/figures/fig18_policy_mechanism_comparison}
+\FloatBarrier
+
+\subsection{Normal admission and runtime-aware shifting}
+Normal admission releases an evaluation job at its original eligibility. Runtime-aware B1 searches the current release and later half-hour candidates within a four-hour delay limit. For candidate $t$ and decision runtime $\widehat R_j$, it estimates the time-weighted intensity
+\begin{equation}
+\overline I_j(t)=\frac{1}{\widehat R_j}
+\int_t^{t+\widehat R_j} I(\tau)\,d\tau.
+\end{equation}
+Here $t$ and the integration variable $\tau$ are time offsets in seconds, $\widehat R_j$ is the decision runtime in seconds, and $I(\tau)$ and $\overline I_j(t)$ are instantaneous and runtime-average intensity in g \co/kWh. Using the complete interval avoids treating the first low-intensity half-hour as representative of a long job. B1 uses given observed runtime in the current comparison. It is a controlled full-information reference for the consequences of shifting, rather than evidence that an online runtime predictor is accurate.
+
+The interval objective follows the non-interruptible workload perspective used in temporal-shifting research~\cite{wiesner2021wait}. The four-hour bound, half-hour candidate grid and observed-runtime input identify this project's particular comparator; the citation does not supply those parameter values.
+
+\subsection{High-carbon admission gate}
+B2 identifies high-carbon intervals using the 75th percentile of the available intensity horizon. Its load threshold is 50\% of the peak projected node requests in the reference release profile during high-carbon intervals, with a one-node minimum. This projection uses release offsets and given runtimes, rather than the completed Slurm baseline schedule used by the oracle method. Flexible work may be postponed to subsequent half-hour boundaries, with a four-hour limit. The rule does not replace Slurm's resource feasibility checks.
+
+Here, ``cap'' means an admission or concurrency threshold, not a hardware limit measured in kilowatts. The rule can change resource occupancy while leaving the fixed cage-power component unchanged. B2 must therefore be distinguished from the hardware power-management methods described in the literature.
+
+For example, Zeus explicitly changes GPU power limits during DNN training~\cite{you2023zeus}. B2 makes an admission decision and leaves that hardware-control variable untouched, so its threshold must be interpreted in the units of projected node requests.
+
+\subsection{Adaptive Balanced}
+Adaptive Balanced evaluates the same carbon opportunity with explicit waiting and congestion costs. Its delay budget is
+\begin{equation}
+B_j=\min(D_{\max},\rho\widehat R_j),
+\end{equation}
+where $D_{\max}=4$ hours is the maximum delay and $\rho=1$ is the dimensionless delay-to-runtime ratio. The calculation uses consistent time units. For each candidate within that budget, the dimensionless score is
+\begin{equation}\label{eq:adaptive}
+F_j(t)=\frac{\overline I_j(t)}{\overline I_j(e_j)}
++\lambda_w\frac{t-e_j}{D_{\max}}+\lambda_c G_j(t).
+\end{equation}
+The congestion term is implemented as
+\begin{equation}\label{eq:adaptive-congestion}
+G_j(t)=\begin{cases}
+\max\{0,V_j^{\mathrm{peak}}(t)-0.5\}, & I(t)\ge I_{75},\\
+0, & I(t)<I_{75}.
+\end{cases}
+\end{equation}
+$V_j^{\mathrm{peak}}(t)$ is the projected peak normalised resource-class load over the candidate execution interval. $I(t)$ is carbon intensity at the candidate release time, and $I_{75}$ is the 75th-percentile intensity threshold for the available horizon, both in g \co/kWh. The load and $G_j(t)$ are dimensionless. Thus the gate tests intensity at release, while the peak load covers the runtime; it does not integrate congestion over every high-carbon subinterval. The frozen weights are $\lambda_w=0.10$ and $\lambda_c=0.25$. A move must also reach a minimum expected runtime-average intensity improvement of 2\%. The class-load threshold is 50\%.
+
+Jobs are processed in eligibility order, with non-flexible and carry-in work keeping their release times. For each flexible job, the generator enumerates candidate times, evaluates interval carbon and projected congestion, and selects the lowest permitted score. An accepted interval updates the load projection used by later decisions. The job audit records the budget, chosen delay and decision reason.
+
+Figure~\ref{fig:adaptive-decision-flow} gives the implementation order: select the candidate with the smallest score, then apply the minimum carbon-improvement gate. If that selected candidate fails the gate, the job keeps its original release. The expected improvement remains a decision quantity until Slurm replay produces the realised schedule.
+\input{supporting/figures/fig15_adaptive_decision_flow}
+
+The score favours lower carbon while penalising delay and anticipated congestion. Decisions are greedy, so the policy cannot establish a global optimum over all job orderings. It also has the advantage of observed-runtime information. The multi-day comparison tests whether its explicit waiting constraint improves the trade-off relative to B1 and B2.
+
+Starburst's job-sensitive waiting control motivates the budget, while GREEN informs the joint consideration of carbon and resource pressure~\cite{luo2024starburst,xu2025green}. The score and frozen weights are this project's choices, not formulas taken from those papers. The equations above define the rule tested in the experiments.
+
+\FloatBarrier
+\subsection{Direct day/night hybrid}
+The hybrid follows the job's UTC eligibility hour. Work eligible from 08:00 to 18:00 uses B2; the remaining hours use runtime-aware B1. Both branches have four-hour limits. The branch is recorded explicitly in the workload profile. This implements the supervisor discussion as a testable comparator. It does not assume that clock time alone consistently identifies low-carbon or low-congestion conditions.
+
+\subsection{Oracle load information}
+Dynamic Forecast Balanced reads a completed normal-admission schedule and forms interval-load arrays for CPU, A100, H100, H100-NVL and requested nodes. Before evaluating a job, its current contribution is removed. Candidate contributions are added under the same capping order used by the carbon estimator. An accepted move updates the arrays before later decisions.
+
+The gate requires improvement in both primary capacity and node-request estimates and a sufficient return per unit of waiting. For the current comparison, the frozen minimum predicted savings are 1\% and 0.5\%, respectively, with a minimum carbon-return parameter of 0.02. Its four-hour/global and one-runtime/job limits remain explicit. These settings identify the saved configuration; they are not claimed to be universally optimal values.
+
+The completed baseline reveals future information about the same workload, so this method is labelled ``oracle'' in result comparisons. It tests how access to that load information affects release decisions and the carbon and waiting trade-off. The method reads a completed schedule; it neither supplies a measured forecast service nor invokes an AI agent.
+
+\subsection{History-only decisions}
+The history model builds runtime, queue-wait and interval-load quantiles from months earlier than the evaluation month. Runtime groups use resource characteristics and deterministic fallback levels where support is insufficient. Earlier development checked expanding history, recent-window history and prior-month calibration. Calibration is assessed on later observations separately from the data used to build the predictor.
+
+The history-only policy obtains its decision runtime and load from frozen quantiles. It uses the dynamic marginal calculation without reading the evaluation job's completed runtime or the future baseline schedule for the decision. The current configuration uses Q75 runtime, load and queue-wait estimates with a four-hour delay bound. This separation permits comparison of a history-informed policy on the same replayed work. Because the representative oracle and history rules also use different safeguards, observed differences cannot be attributed solely to information uncertainty.
+
+The low-impact variant forms candidates from a five-minute grid, carbon-interval boundaries and the exact budget endpoint, up to 60 minutes. The endpoint can therefore produce a delay shorter than five minutes. It uses Q90 runtime for carbon exposure and a more conservative delay allowance,
+\begin{equation}
+B_j=\min\{60\,\mathrm{min},\;0.5\widehat R_{j,25},\;
+L_j,\;\text{remaining user delay budget}\}.
+\end{equation}
+Here $\widehat R_{j,25}$ is the historical 25th-percentile runtime estimate for job $j$. $L_j$ is the non-negative declared source time limit; a zero value permits no additional delay. It is an extra duration bound, not a user completion deadline. A user can receive at most 60 minutes of cumulative policy delay and two delayed jobs in the window. Uncertain or unsupported long-GPU cases can retain baseline admission. Carbon, congestion and return thresholds are frozen in the campaign manifest. These constraints limit direct intervention but do not guarantee that Slurm's subsequent queue response improves aggregate carbon or benefits every user.
+
+\section{Accounting and audit outputs}
+The analyser joins source profiles to simulator logs and separates dependency time, deliberate policy delay and scheduler wait. It retains allocated node lists for the distinct-node sensitivity calculation. The carbon calculator computes exact overlaps between re-anchored job intervals and half-hour intensity bins, converts the occupancy index using Equations~\ref{eq:power}--\ref{eq:carboncage}, and produces common-horizon scenario summaries. Exact overlap arithmetic does not establish that the reconstructed intervals have the same timing or resource feasibility as the logged schedule.
+
+Decision-time expectations and realised replay outcomes are stored in separate fields. A predicted saving may disappear when later scheduling moves other jobs, or change sign under another occupancy proxy. Keeping both records helps distinguish correct policy arithmetic from an accurate queue forecast.
+
+Automated checks cover parsing, timestamp conversion, interval overlaps, release constraints, carry-in categories and complete replay denominators. Small test fixtures verify the code and are excluded from the main five-date results. A separately labelled V2 fixture illustrates controller behaviour. The writing package keeps aggregate figure sources and provenance while the full experiment directory retains detailed logs and profiles.
+
+Post-study maintenance adds explicit negative-wait flags and separates job completion, timing validity and process exit. The historical shell wrapper masked the simulator exit code, so a completed replay cannot retrospectively be called a clean process exit. The revised wrapper preserves simulator and Docker exit evidence, with missing evidence marked unknown. These changes improve reporting; they neither repair the unresolved clock behaviour nor alter the 55 frozen replays.
+
+\section{Multi-day execution}
+The campaign runner creates a frozen workload and associated policies for each date and saves progress after each complete attempt. The amended dispatcher runs up to five isolated scenarios concurrently, subject to baseline and oracle dependencies. It records input hashes, the image identifier, configuration, execution backend and audit results. Technical attempts are limited and retained. Resume logic skips only completed runs whose inputs and checks still match, preventing a partial directory from being mistaken for a finished experiment.
+
+Once all relevant runs for a date are available, the summariser uses a shared model-completion horizon and repeated-baseline reference. It reports each date, then the distribution across dates. This ordering prevents a favourable pooled total from obscuring a difficult date. The final evidence set contains all 55 required replays and does not substitute zero for an incomplete attempt.
+
+\section{Engineering extension after the frozen comparison}\label{sec:v2-design}
+The five-date findings prompted a separate implementation revision, called V2. Developed after the main comparison, it left the seven policies and their saved outputs unchanged. Its purpose was to correct specific decision and reporting weaknesses within a three-hour total test budget. It was not another parameter search. Table~\ref{tab:engineering-changes} links each change to the problem it addresses.
+
+\begin{table}[htbp]\centering\small
+\caption{Implemented improvements and the evidence required to assess them.}\label{tab:engineering-changes}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.23\linewidth}>{\raggedright\arraybackslash}p{0.36\linewidth}>{\raggedright\arraybackslash}p{0.34\linewidth}@{}}\toprule
+Change & Previous limitation & Implemented response\\\midrule
+Feasibility before ranking & The best-scoring candidate could fail a gate while another candidate was feasible. & Filter candidate constraints first; rank eligible alternatives; retain immediate admission as a competitor.\\
+Decision audit & A zero-action result did not always explain the reason. & Record candidate scores, rejection reasons, accepted actions and budget decisions; mark unrecoverable historical reasons as unknown.\\
+Validation by category & Completion could be mistaken for timing or model validity. & Report completion, input identity, initial state, timing, carbon coverage and repeatability separately.\\
+Queue feedback & A static hold did not react to the actual queue. & Reconsider unsubmitted held work on state changes and timer events; release it if the expected benefit disappears.\\
+Shared user budget & Per-job bounds still allowed concentrated cumulative delay. & Count spent and reserved delay against a per-user limit and consider cheaper feasible alternatives.\\
+Failure handling & Controller failure could strand work or reset the test budget. & Fail open by submitting work; persist one total deadline and a closed-experiment record.\\\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Candidate selection and budget accounting}
+The frozen Adaptive implementation first chooses a score winner and then applies its carbon gate, as Figure~\ref{fig:adaptive-decision-flow} records. This is retained as the tested original behaviour. The independent V2 copy checks feasibility before ranking candidates in the affected Adaptive, history, forecast and marginal branches. A regression fixture demonstrates a case where the original rule abstains because its score winner fails the improvement gate, while a feasible alternative beats immediate admission. This establishes a code-level difference; it supplies no replacement carbon result for the frozen campaign.
+
+The feedback controller limits each proposed direct hold to the smaller of 30 minutes and half the historical predicted runtime. Each user also has a cumulative 30-minute budget. Spending includes waiting already incurred and reservations for currently held jobs. Same-batch job/time alternatives are ordered by estimated benefit per waiting time. When the best option exceeds the remaining user budget, the controller can consider a cheaper feasible option. Cancelling a hold releases its unused reservation, but does not erase delay already experienced.
+
+\subsection{Connection to actual simulator events}
+A C bridge in a separate simulator build intercepts job arrivals before submission to Slurm. It passes arrived-job and submitted-job state to a persistent Python controller. The controller can admit a job immediately or retain it outside Slurm for later review. Queue-state changes and timer checks trigger reconsideration: the timer is 300 seconds for the real-record sample and 60 seconds for the functional fixture. Already submitted or running jobs are neither withdrawn nor interrupted.
+
+The controller estimates remaining work from earlier-month runtime predictions and elapsed running time. It cannot inspect future arrivals and does not use the replay's configured completion duration as its decision-time predictor. Its simpler resource-work estimate cannot reproduce Slurm priority, fragmentation or backfill reservations exactly; Slurm still determines actual starts and allocations. The retrospective NESO series also remains an input. Evaluating genuinely available decision-time carbon forecasts would require a separate study.
+
+Virtual-clock advancement is paused while the controller processes an exchange. If the controller fails, the bridge records the failure and submits retained and later-arriving work without further carbon holds. The interface has a 4,096-arrival prototype limit. It is an experimental integration rather than a claim of complete production middleware. Figure~\ref{fig:v2-feedback} distinguishes the decision loop from the queue it observes.
+\input{supporting/figures/fig27_v2_feedback}
+\FloatBarrier
+
+\subsection{Bounded checks and their scope}
+The extension was evaluated using unit/regression tests, a paired three-job functional fixture, a paired sample of 64 trace-derived jobs and an injected controller-startup failure. The total recorded elapsed budget was 1,259.72 seconds, about 21 minutes, including build and debugging attempts. No additional training, full-day replay or five-date campaign was started. The input hashes and results of the original comparison were preserved.
+
+The 64-job sample consists of the first eligible records on 18 November that satisfy the CPU-partition, one-node and 60--3,600-second configured-runtime filters. Both runs begin empty and omit the production carry-in workload. Resources and runtimes are unchanged between the paired runs; 17 of the 64 jobs are flexible under the retained selection. The parameters were fixed before this check: a five-minute candidate grid, a 5\% minimum predicted runtime-average intensity improvement and the above job/user budgets. Section~\ref{sec:v2-results} reports the outcomes separately from the main experiment.

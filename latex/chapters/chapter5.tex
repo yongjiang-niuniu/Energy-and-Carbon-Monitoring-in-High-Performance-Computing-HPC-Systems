@@ -1,0 +1,167 @@
+\chapter{Evaluation and Results}\label{ch:evaluation}
+\section{Evidence stages}
+The evaluation developed in stages. Synthetic workloads tested event handling and multi-node configuration. June trace windows supported policy development and showed why initial queue pressure and full-runtime carbon exposure matter. A November comparison examined a broader set of rules, followed by a December low-impact check. The main experiment then compared seven representative strategies on the same five dates. Once that campaign was complete, a bounded feedback extension tested specific implementation changes.
+
+Each stage answers a different question. June windows use different cohorts and starting pressure, predictor calibration checks estimates without replaying a counterfactual queue, and November results informed later rules. Table~\ref{tab:evidence-stages} records these roles so that earlier work remains visible without its best percentages being presented as final test results.
+
+\begin{table}[htbp]\centering\small
+\caption{Experimental stages and their role in the dissertation.}\label{tab:evidence-stages}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.23\linewidth}>{\raggedright\arraybackslash}p{0.38\linewidth}>{\raggedright\arraybackslash}p{0.32\linewidth}@{}}\toprule
+Stage & Work completed & Evidential role\\\midrule
+Synthetic and June development & Multi-node/partition simulation; trace conversion; initial-state and delay-rule checks. & Development evidence, not the final estimate of savings.\\
+Historical predictors & Earlier-month runtime, queue and load quantiles; later-period calibration diagnostics. & Describes information quality, not measured online carbon-forecast accuracy.\\
+12 November comparison & Twelve scenarios, each with 3,900 jobs. & Historical policy comparison and queue-fidelity diagnostic.\\
+8 December legacy check & Three 5,494-job runs; subsequently audited for initial-state restoration. & Superseded counterfactual evidence because 24 running jobs were not restored at the boundary.\\
+Five-date main campaign & Seven policies per date; three baselines and two Adaptive runs per date; 55 final replays. & Main descriptive comparison, with timing and model limitations reported.\\
+V2 engineering extension & 37 code tests, paired three-job and 64-job checks, and a failure check. & Tests implemented mechanisms; not an eighth main-study policy.\\\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Historical comparisons and corrections}
+\subsection{November queue fidelity}
+The 12 November comparison completed twelve scenarios containing 3,900 jobs each: 3,335 evaluation jobs and 565 carry-in jobs. Its source-trace eligible-to-start P95 was 323,424.4 seconds, compared with 53.44 seconds in baseline replay. The queue-fidelity comparison below shows the discrepancy. A complete workload therefore does not establish calibrated production queue timing. Historical priority, fair-share, reservations and administrator state are not fully recovered; simulated waiting is conditional on the reconstruction, not a prediction of actual Stanage service.
+\input{supporting/figures/fig07_queue_fidelity}
+\FloatBarrier
+
+\subsection{November carbon and waiting}
+The historical comparison shows how the policy design developed. Its paired table and trade-off plot report carbon change alongside tail waiting.
+\input{assets/tables/table03_november_results}
+\input{supporting/figures/fig05_november_policy_tradeoff}
+\FloatBarrier
+
+On that date, B1 reduced the primary load-dependent estimate by 0.9797\%, added 1,520.23 cumulative job-hours of direct delay and increased P95 total waiting by 148.89 minutes. Adaptive Balanced retained a smaller 0.6819\% reduction with 484.43 delay hours and a 70.35-minute P95 increase. Its runtime-related budget therefore offered a less costly trade-off in this historical example. The requested-node changes were instead $-0.2353\%$ and $-0.0239\%$, respectively, so neither demonstrates reduction under both representations. The five-date comparison below assesses the same issue on additional matched workloads.
+
+\subsection{November user burden}
+Figure~\ref{fig:november-user-burden} separates cumulative delay from the carbon and waiting-percentile comparison. Adaptive's per-job budget limited individual holds, but much of its accumulated delay still fell on one user. These job-hour totals describe delays summed across jobs, not one person's elapsed waiting time.
+\input{supporting/figures/fig06_november_user_burden}
+\FloatBarrier
+
+\subsection{Why the old December percentage is not retained}
+The earlier 8 December check reported a 0.7179\% primary-model increase for Low-impact, alongside lower P95 waiting. A later audit found that 24 jobs that should have been running at the boundary had not been restored; the latest started approximately 12.59 hours later. This changed the initial resource pressure, preventing the pair from identifying the admission policy's effect. The original files and percentage remain in the provenance archive, but the chart is excluded from valid carbon comparisons. Excluding the pair corrects the evidence record; it does not establish that Low-impact succeeded. The main five-date campaign passed the corresponding initial-state checks and remains a separate evidence set.
+
+\subsection{Historical predictor diagnostics}
+The earlier runtime/load diagnostics below provide context for the history-based policies. A nominal quantile must be checked against later observations rather than assumed reliable from its name. Short jobs, long GPU work and changes between months can have different prediction errors. These checks informed the historical variants, but do not substitute for observing their queue outcomes after admission.
+\input{supporting/figures/fig09_predictor_calibration}
+\FloatBarrier
+
+\section{Completed five-date comparison}\label{sec:main-results}
+All 55 required final replays completed their expected jobs. The five evaluation populations contain 5,806, 1,629, 5,646, 3,113 and 3,210 jobs, respectively: 19,404 evaluation-job instances in total. Each date also retains its own running, queued and held carry-in work. Different dates preserve their natural counts; within a date, every policy uses the same cohort, runtime, resources, flexibility assignment and initial-state categories. Thus the study compares the policies on the same five cases, rather than testing each on a different favourable subset.
+
+The results use median repeated-baseline carbon and the median of the two Adaptive carbon values. They retain the original re-anchored accounting intervals and reported waiting definition in Section~\ref{sec:time-anchoring}; the later submission-residual audit does not replace these numbers with log-aligned alternatives. The equal-day normalisations follow Equations~\ref{eq:normalised-carbon}--\ref{eq:equal-day}. The complete daily tables in Appendix~\ref{app:daily-results} retain all 35 date--policy combinations, including negative and zero-action observations. Positive reduction values mean lower modelled carbon; negative values mean an increase.
+\input{assets/tables/table09_final_policy_summary}
+\input{supporting/figures/fig19_daily_primary_carbon_heatmap}
+\FloatBarrier
+
+\subsection{Direction, scale and the meaning of an average}
+B1 reduced the primary load-dependent estimate on four dates, reaching 1.3835\% on its best date. On 10 December it instead increased the estimate by 2.6427\%. The equal-day mean reduction was consequently $-0.0784\%$. A four-out-of-five success count would miss the importance of this one larger adverse result.
+
+History-only had a positive equal-day mean of 0.1021\% in the primary load-dependent model. Dividing each day's shared carbon difference by that day's evaluation-job count, then averaging the five normalised values, gives about 0.0123 g \co{} per evaluation job. Mean added total wait was 4.97 minutes per evaluation job. These are population summaries. They do not mean each job saved that amount or waited that long, and the carbon figure is not a measured per-job footprint.
+
+The averaging weights affect the answer. Adaptive had a positive mean daily percentage reduction of 0.0649\%, but its mean normalised saving was $-0.0240$ g per evaluation job and its baseline-carbon-weighted reduction was $-0.0126\%$. Differences in baseline carbon and job count give each date different weights in these summaries, so their signs can differ. All are reported. History-only stayed positive under these conventions, with a pooled load-dependent reduction of 0.0813\% and a whole-cage reduction of only 0.00335\%. Including the fixed component makes the whole-cage percentage much smaller. Neither percentage is a measured annual saving.
+\input{supporting/figures/fig20_policy_carbon_wait_small_multiples}
+\input{supporting/figures/fig23_complete_daily_carbon_wait_panels}
+\FloatBarrier
+
+\subsection{Waiting and concentrated user burden}\label{sec:user-burden-results}
+The carbon and waiting plots show each date separately. A direct policy hold accounts for only part of the wait: changes in queue order can affect jobs that were never selected for delay, and replays also vary. Mean waiting differences therefore describe the paired observations, without isolating the causal cost of each selected action.
+
+Across the five dates, B1 deliberately delayed 4,334 evaluation jobs; 3,647 were held longer than their configured runtime. Adaptive delayed 844 jobs, none beyond configured runtime. This verifies Adaptive's direct-delay bound on the tested jobs. It does not guarantee that scheduler waiting or a user's cumulative burden is small. History-only delayed 58 jobs, of which 44 exceeded their configured runtime despite meeting predictor-based budgets.
+
+The difference between a population mean and an individual user's experience is particularly clear for History-only. Its equal-day average direct delay was only 0.523 minutes per evaluation job. On 9 December, however, one pseudonymous user's 35 jobs accumulated 90.22 job-hours of direct delay and accounted for 86.77\% of that day's policy hold burden. This is a sum over 35 jobs, not a 90-hour hold on one job. The associated overall P95 waiting change was about 21.90 minutes. A small mean does not remove the need for a cumulative user budget.
+\input{supporting/figures/fig21_daily_user_burden}
+\input{supporting/figures/fig24_direct_hold_actual_wait_spillover}
+\FloatBarrier
+
+\subsection{No-action cases and repeat variation}
+Low-impact moved only three evaluation jobs across all five dates, with three cumulative hours of direct delay. The Oracle reference moved none. Its access to a completed baseline schedule did not guarantee a feasible candidate under its gates, and it is not a mathematical optimum. Near-zero intervention is therefore reported as abstention rather than as a successful carbon-control result.
+
+The audit identified twelve no-action policy--date combinations whose executable event, user and configuration files were byte-identical to baseline. Their output differences cannot be attributed to intentional delay. On 10 December, the three baseline primary carbon estimates were 125.1411, 125.0978 and 127.1193 kg, a relative range of 1.6153\%. The baseline P95-wait range was approximately 107.40 minutes. That day's no-action B2, Oracle and Low-impact carbon values all fell inside the observed baseline range. Reporting their negative percentages without the no-action marker would give a misleading mechanism explanation.
+\input{supporting/figures/fig22_repeat_noise_model_direction}
+\FloatBarrier
+
+\subsection{Stability under the frozen criteria}
+No strategy met every frozen carbon-stability condition. B1 exceeded the daily noise and minimum-saving threshold on four dates, but failed on worst-day increase and pooled direction. History-only exceeded that threshold on three dates rather than four, and its worst-day increase was 0.3028\%, above the 0.1\% tolerance. Its leave-one-date-out mean stayed positive, with a minimum of 0.0562\%, which is a useful descriptive indication but does not override the failed conditions.
+
+The seven configurations consequently have mixed or no-action outcomes rather than a single robust ordering. Three occupancy models also disagree frequently: only B2 and Low-impact each had one date positive in all three models; the remaining rules had none. This is sensitivity to allocation representations, not a majority vote among independent meters. The mean, median, spread and worst date describe the cases; with five selected dates and unequal repeats, they are not a basis for an unsupported significance claim.
+\FloatBarrier
+
+\section{Explaining observed carbon increases}\label{sec:carbon-increases}
+Before explaining a carbon increase, it is necessary to check whether the policy changed any admissions, whether the initial state and workload membership matched, and how the difference compares with observed replay variation. An interval-level decomposition can then show where the accounting change occurred.
+
+For a policy-minus-baseline difference, write the energy change in interval $k$ as $\Delta E_k$ and let $\overline I$ be the common window's duration-weighted mean intensity. The following identity separates total-energy and timing contributions:
+\begin{equation}\label{eq:decomposition}
+\Delta C=\frac{\overline I\,\Delta E}{1000}
++\frac{1}{1000}\sum_k\Delta E_k(I_k-\overline I),
+\qquad \Delta E=\sum_k\Delta E_k.
+\end{equation}
+Here $\Delta E_k$ and $\Delta E$ are modelled load-dependent energy differences in kWh; $I_k$ and $\overline I$ have units of g \co/kWh; $\Delta C=C_p-C_0$ is in kg \co. A positive $\Delta C$ means an increase, the opposite sign convention to a reported reduction. The first term is the energy-volume contribution and the second is the time-alignment contribution. Their split depends on the chosen reference intensity, although the net change does not. This is an algebraic decomposition of the scenario outputs, not a causal decomposition of measured power.
+
+Against the selected reference replay on 10 December, B1's 3.3071 kg increase decomposed into approximately 0.1091 kg from energy volume and 3.1979 kg from time alignment. About 96.7\% of that net increase therefore lay in the time-alignment term. History-only had a small negative energy-volume contribution but a larger positive time-alignment contribution: consuming slightly less modelled energy did not ensure lower carbon if it occurred in higher-intensity intervals. The decomposition figure uses the saved run pairs, whose reference is stated rather than silently equated with the median-repeat main table.
+\input{supporting/figures/fig25_within_window_carbon_decomposition}
+\FloatBarrier
+
+The fixed 140 kW term is not an explanation for these paired increases: its integral is identical over the common horizon and cancels. Occupancy capping, sharing and placement can change the load-dependent energy integral even when job requests and runtimes are unchanged. On 13 November, for example, B1 saved 1.0936 kg in the capacity model while increasing the requested-node estimate by 2.0919 kg. This disagreement limits a hardware-level interpretation.
+
+Queue effects are another plausible mechanism, but cannot be isolated from repeat variation by these runs alone. On 10 December, B1's 741 directly delayed jobs had about 16.15 hours of mean additional waiting against the first baseline; the 2,469 jobs without direct delay also had about 9.52 hours more waiting on average. In the same dated History-only run, only two jobs were held, yet their mean absolute predicted-versus-replayed start error was approximately 35.17 hours. These are case-specific diagnostics, not general prediction-error estimates for the policy.
+
+\section{Completion, timing and retained failures}\label{sec:timing-audit}
+\subsection{Completion and runtime errors}
+Every final replay completed its expected jobs and passed the existing workload and initial-state checks. A later read-only audit nevertheless found at least one logged-runtime error above 60 seconds in 38 of the 55 final replays. Seventeen had no error above that diagnostic line. Completion is therefore reported separately from timing fidelity; the diagnostic was not retroactively used to delete inconvenient dates.
+
+Eight runtime errors exceeded one hour, all in the final extra Adaptive replay on 10 December: seven held carry-in jobs and one evaluation job. Their completion events were processed together after a large gap in the simulation clock. The recorded due times matched logged starts plus configured runtimes within approximately 0.0343 seconds. Crucially, every job had already started before the earliest of these eight events was due. Those particular late completions cannot explain earlier waiting differences. Carbon accounting used configured duration and did not count the entire logged overrun as extra job energy. This narrows the impact of the largest anomaly without proving that all other timing discrepancies are harmless; the clock-gap trigger remains unverified.
+
+The first attempt at that extra Adaptive run had 161 timeouts and was retried under the existing attempt limit. Both attempts' logs and tables remain archived. The reported denominator is 55 final completed replays, not a claim that the entire process had no failures. Similarly, the bridge comparisons supporting parallel execution on 13 November do not prove every later case equally stable or establish that concurrency caused all variation.
+
+\subsection{Submission residuals after time alignment}\label{sec:submission-residual-audit}
+A separate read-only audit of the same 55 final job-result tables measured $\epsilon_j$ from Equation~\ref{eq:submission-residual}. In 38 replays, at least one job had an absolute residual greater than 60 seconds. This happens to equal the count for runtime errors above, but the quantities and their affected jobs are different. One concerns submission relative to intended release; the other concerns logged execution duration relative to configured runtime.
+
+\begin{table}[htbp]\centering\small
+\caption{Submission-time residuals in existing final replay outputs. Residuals are measured after each replay's common median-origin alignment; no simulator was rerun.}\label{tab:submission-residual-audit}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.55\linewidth}>{\raggedright\arraybackslash}p{0.21\linewidth}r@{}}\toprule
+Statistic & Population & Value\\\midrule
+Replays with any $|\epsilon_j|>60$ s & All final replays & 38/55\\
+Largest $|\epsilon_j|$ & All replay jobs & 2,147.69 s\\
+P95 $|\epsilon_j|$, 15 November normal admission & 1,629 evaluation jobs & 2,009.47 s\\\bottomrule
+\end{tabular}
+\end{table}
+
+The largest residual occurred in the first repeated baseline on 15 November and was approximately 35.79 minutes. The evaluation-job P95 in that date's original baseline was approximately 33.49 minutes, so the issue is not confined to one isolated job. Both exceed the half-hour carbon interval. Residuals vary within a replay, so replacing logged submission with intended release can change a job's exposure and its overlap with other jobs rather than merely shift the clock origin.
+
+Quantifying the carbon effect of anchoring would require a separate calculation on the same logs, using a consistent alternative start-time definition and a common comparison horizon. Small carbon differences therefore remain conditional on the retained reconstruction. The audit identifies this limitation, but cannot determine whether a strategy's sign or ranking would reverse.
+
+\subsection{Negative waiting markers}\label{sec:negative-wait-audit}
+The same read-only audit found 35 negative logged queue-wait records across 12 of the 55 final replays: 32 evaluation records and three carry-in records. The minimum was $-126.010020$ seconds. There were also 21 negative reported total-wait records, with a minimum of $-83.309414$ seconds. These are counts of replay records, not distinct production jobs or negative policy-minus-baseline changes.
+
+The submission marker is an RPC information-log event, not the canonical Slurm accounting submission field. Its ordering relative to allocation can differ, and the inspected logs contain non-monotonic timestamps. The root cause has not been isolated. These values must therefore not be interpreted as physical negative waiting. Equation~\ref{eq:anchored-start} clips negative queue wait only for carbon placement; the frozen waiting summaries retain the raw values. The original completion check did not test this chronology. The maintenance revision now reports completion and timing separately and flags negative values without rewriting the historical evidence. The effects on waiting summaries and carbon rankings have not been recalculated.
+
+\section{Bounded feedback-extension results}\label{sec:v2-results}
+\subsection{Code behaviour and the functional fixture}
+All 37 final V2 unit/regression tests passed. They covered feasible alternative candidates, immediate admission, user-budget allocation, spent-delay accounting, repeated submission prevention, unseen-arrival isolation, carbon coverage, the total experiment deadline and refusal to restart a closed experiment. These checks validate the specified behaviours, not the real-world effectiveness of the policy.
+
+In the paired three-job fixture, one job received a hold to 300 seconds, another job from the same user was rejected by the shared budget, and a larger job arrived at 60 seconds. The controller cancelled the first job's remaining hold near 60.10 seconds. Both runs completed all three jobs, but cancelling the hold did not restore its queue position: that job's total wait rose from 3.24 to 1,322.36 seconds. It was submitted behind the larger job and then waited for resources. Figure~\ref{fig:v2-queue-timeline} makes this difference visible.
+\input{supporting/figures/fig28_v2_queue_timeline}
+\FloatBarrier
+
+This fixture's capacity carbon proxy fell by about 8.45\%, while mean waiting increased by approximately 439 seconds. The designed scenario checks the calculation path; its proxy change is not a Stanage saving and is excluded from the seven-policy result table. The finding concerns queue order: cancelling a hold limits the remaining direct delay, but cannot guarantee recovery of the queue position already lost.
+
+\subsection{The paired 64-job trace sample}
+The sample used the same 64 job records and empty initial state in both runs. Both completed all jobs and neither deliberately held any. Of the feedback jobs, 47 were admitted under protection rules and 17 flexible jobs had no feasible hold. Twenty candidate times failed the 5\% improvement gate; some short jobs also had budgets too small to reach the next five-minute candidate. Abstention here is an observed response to the fixed rules, not a reason to lower the threshold after seeing the result.
+
+\begin{table}[htbp]\centering\small
+\caption{V2 paired 64-job engineering check. Waiting and runtime errors are in seconds.}\label{tab:v2-results}
+\begin{tabular}{@{}lrr@{}}\toprule
+Metric & Normal admission & Feedback\\\midrule
+Jobs completed & 64/64 & 64/64\\
+Jobs deliberately held & 0 & 0\\
+Mean total wait (s) & 1,341.38 & 1,342.76\\
+P95 total wait (s) & 2,362.14 & 2,411.63\\
+Maximum absolute runtime error (s) & 54.66 & 66.08\\
+Jobs with runtime error above 60 s & 0 & 1\\\bottomrule
+\end{tabular}
+\end{table}
+
+The timing-alignment carbon proxy changed by $-0.01321\%$ when expressed as a reduction, while mean wait increased by 1.39 seconds. As no job was actively held, these are not carbon or waiting effects of intentional delay. A single pair cannot separate controller processing from replay variation. The proxy integrates capacity fraction, duration and carbon intensity; it omits the main study's 140/195 kW conversion and full carry-in queue. It is not a physical per-job footprint or a replacement whole-cage estimate.
+
+One feedback job ran for 279.08 logged seconds against a configured 213 seconds, exceeding the unchanged 60-second timing diagnostic. The warning remains even though completion passed. A separate injected controller-configuration failure triggered the bridge's fail-open path and all three fixture jobs completed. This covers that startup failure, not every failure mode. Successful simulation attempts still showed the existing exit code 139 after completion, so process shutdown was not reported as clean.
+
+An earlier functional attempt exposed an arrival-grid budget error, which was corrected before the accepted fixture. The first real-record attempt could not resolve simulated nodes under an added network-isolation setting; it was stopped and excluded. Restoring the project's standard container network allowed the same input to run. These attempts remain recorded, and the combined work finished within about 21 minutes of the single three-hour budget. The extension is complete at this bounded scope; no new full-day experiments are required to interpret these observations.

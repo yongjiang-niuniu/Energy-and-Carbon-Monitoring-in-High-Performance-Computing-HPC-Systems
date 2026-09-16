@@ -1,0 +1,16 @@
+\chapter{Conclusion}\label{ch:conclusion}
+This dissertation evaluated carbon-aware job admission using Stanage accounting records and trace-driven Slurm simulation. The work included auditing the data, reconstructing the initial workload, implementing admission policies and comparing carbon with service outcomes. Slurm supplied the scheduling and resource allocation functions. The contribution lies in the implementation and case-study evaluation built around it. The study neither introduces a new scheduling engine nor measures Stanage electricity use.
+
+The main comparison covered seven policies on five UTC dates, giving 55 final completed replays. The archive supplied timing and resource information but no usable per-job energy, so the carbon results remain scenario estimates. The complete daily tables include negative and no-action outcomes alongside positive results.
+
+For RQ1, carbon changes depended on the policy, date and model. B1's worst result outweighed four positive dates. History-only produced a small positive equal-day mean reduction of 0.1021\% under the primary model, but none of the seven configurations met every frozen stability condition. The cases therefore provide no consistently best policy.
+
+RQ2 showed why direct delay, subsequent queueing and cumulative user burden need separate assessment. Adaptive's runtime-proportional bound constrained its intended holds. History-only showed how a small mean can conceal delay concentrated on a few users. Carbon and service need to be balanced, although a saving need not worsen every user's experience.
+
+For RQ3, earlier-month predictors reduced hindsight in runtime and load information, while the carbon input remained retrospective. Budgets based on predictions did not always protect jobs relative to their eventual runtime. Because the tested rules also used different safeguards, their comparison cannot isolate the effect of information quality. No-action results show when those rules abstained; they do not establish that all shifting opportunities were absent.
+
+RQ4 identified sensitivity to occupancy representation, replay variation and accounting choices. Timing audits found material submission residuals and negative waiting markers even in completed replays. Their effects on the frozen estimates have not been recalculated. The retained results apply to re-anchored intervals and finite arrival windows. They cannot be interpreted as an unadjusted production schedule or a measured electricity saving.
+
+The separate V2 extension implemented feasible-first selection, cumulative user budgets and feedback from simulator events. Its functional test showed that cancelling a hold cannot restore an earlier queue position. The 64-job pair made no deliberate holds. These tests provide engineering evidence and remain separate from the five-date policy results.
+
+The completed study provides an inspectable account of how admission decisions, shared-queue waiting and carbon assumptions interact in this Stanage case. The code and manuscript have undergone a final review. Further work could examine timing sensitivity, calibrated power, issue-time forecasts and continuous background arrivals. Those questions extend beyond the completed experiments reported here.

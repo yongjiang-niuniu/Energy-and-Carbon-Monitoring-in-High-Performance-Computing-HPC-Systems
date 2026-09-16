@@ -1,0 +1,27 @@
+\chapter{Reproducibility and Evidence Guide}
+The writing package contains the LaTeX sources, bibliography, figures and aggregate evidence. The implementation and build dependencies are supplied in a separate code-only ZIP. Restricted data, generated workloads and detailed replay outputs remain in the local research archive, so reproducing every result requires inputs beyond either upload package. Earlier writing drafts are preserved but excluded from compilation.
+
+Figure provenance is recorded in the supporting register with the source CSV, generating script, evidence stage and content hash. Existing data files may retain older variable names; captions state the interpretation used in this dissertation. The current campaign is identified as \texttt{multiday\_20260908}. Its full workload manifests, detailed simulation logs and raw source archive remain in the local research project rather than the shared writing package.
+
+\begin{longtable}{p{0.28\textwidth}p{0.62\textwidth}}
+\toprule Artefact & Purpose\\\midrule\endhead
+Workload profile & Source timing, resources, runtime, flexibility and carry-in membership for each simulated job.\\
+Policy decision audit & Candidate information, budgets, selected release and reasons for retaining normal admission.\\
+Replay validation & Complete submissions, starts and completions; timeout and carry-in checks.\\
+Interval carbon output & Common-horizon occupancy, energy and generation-intensity integration under each model.\\
+Daily campaign summary & Matched-date metrics, repetition envelopes and the planned-date completion denominator.\\
+Figure and table register & Mapping from a dissertation visual to its source and empirical status.\\\bottomrule
+\caption{Research artefacts and their purposes.}\label{tab:research-artefacts}\\
+\end{longtable}
+
+The final main-study snapshot is the completed \texttt{multiday\_20260908} campaign, closed on 10 September 2026. It contains 55 required final replays and 35 policy--date outcomes. Its original manifest is retained alongside the parallel-execution amendment and carry-in correction record. A separate \texttt{policy\_v2\_20260910} directory contains the bounded extension; it is closed and does not overwrite main-study configurations. The dated source manifests accompanying this manuscript contain full SHA-256 hashes rather than relying on the date or policy label to identify a version.
+
+The local research archive separates final results from retained attempts. The first extra Adaptive attempt on 10 December contains 161 timeouts and remains in its previous-attempt directory. Legacy 8 December outputs are also preserved, although they are not accepted as matched initial-state evidence. Keeping these records allows corrections to be checked against the original files.
+
+The final code archive, \path{Stanage_Project_Code_Final_20260910.zip}, includes EDA, workload conversion, admission, carbon accounting, tests, configuration, modified Slurm source and the independent V2 implementation. Its \path{submission_manifest.json} records hashes, entry points and exclusions. The separate \path{maintenance_revision.json} identifies post-study reporting fixes; the earlier package remains preserved locally. These fixes changed no policy algorithm, carbon arithmetic or simulator C source. Notebook code cells are retained without outputs. Papers, slides, Markdown, raw data and experiment results are excluded, while required licences and embedded command-line resources remain. Build declarations omit upstream manuals and the upstream test-suite build.
+
+Entry points are \path{stanage_eda/scripts/analyse_stanage.py} for EDA and, under \path{simulator/slurm_policy_experiments/}, \path{build_exact_24h_workload.py}, \path{generate_policy_scenario.py} and \path{calculate_carbon.py} for preparation, admission and accounting. Regenerate historical predictors with \path{build_history_quantile_model.py} and obtain carbon data with \path{download_neso_carbon.py}. The authorised Stanage archive is required separately; examples do not replace it.
+
+The package includes Python dependencies and a test entry point. After extraction outside the project, the earlier package passed 146 tests and two subtests. Its Slurm source also passed configuration, compilation and installation on Linux with networking disabled; no replay was run. The separately extracted final maintenance package passed 159 tests and five subtests, including checks for negative timing, raw-wait preservation, exit recording and read-only auditing. Historical launchers retain Colima context choices and a local archive path that need configuration on another host. These tests and builds do not establish one-command reproduction or bit-identical schedules elsewhere.
+
+The residual and negative-wait audits read the 55 final tables without replacing historical metrics; their aggregate evidence accompanies this manuscript. The packaged \path{tools/maintenance/audit_submission_timing.py} accepts an external campaign and requires a new output directory outside it. Both packages exclude raw records, real user identifiers, private configuration and the EVRP reference PDF.

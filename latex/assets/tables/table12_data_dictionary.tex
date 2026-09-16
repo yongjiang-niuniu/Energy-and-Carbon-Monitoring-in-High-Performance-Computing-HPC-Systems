@@ -1,0 +1,18 @@
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.25\linewidth}>{\raggedright\arraybackslash}p{0.68\linewidth}@{}}
+\caption{Key accounting fields and their interpretation.}\label{tab:accounting-fields}\\
+\toprule Field & Meaning and use\\\midrule\endfirsthead
+\toprule Field & Meaning and use (continued)\\\midrule\endhead
+\bottomrule\endfoot
+\texttt{JobIDRaw}, \texttt{User} & Job identifier for deduplication; user identifier converted to local pseudonyms for burden analysis.\\
+\texttt{Submit}, \texttt{Eligible} & UTC submission and eligibility timestamps. Eligibility marks availability after recorded dependencies or holds.\\
+\texttt{Start}, \texttt{End} & UTC execution timestamps, used to classify running work and examine timing.\\
+\texttt{ElapsedRaw} & Elapsed runtime in seconds; supplies execution duration, subject to the stated replay cap.\\
+\texttt{TimelimitRaw} & Declared time limit in minutes, converted for comparison; not a guaranteed completion deadline.\\
+\texttt{State}, \texttt{ExitCode} & Job outcome and exit status; distinguish completed work from failures.\\
+\texttt{Partition}, \texttt{QOS} & Partition and quality-of-service labels; describe resource access, not recovered historical priority state.\\
+\texttt{ReqCPUS}, \texttt{AllocCPUS} & Requested and allocated CPU counts; allocations do not measure processor activity.\\
+\texttt{ReqNodes}, \texttt{AllocNodes}, \texttt{NodeList} & Requested/allocated node counts and allocated host names; support inventory and overlap analysis.\\
+\texttt{ReqTRES}, \texttt{AllocTRES} & Requested/allocated resource strings, including CPU, memory and GPU quantities. Memory units require parsing.\\
+\texttt{ReqMem} & Requested memory with size and per-CPU/per-node qualifiers; not measured memory consumption.\\
+\texttt{ConsumedEnergyRaw} & Energy field, conventionally joules. This archive has no usable non-zero values for validation.\\
+\end{longtable}

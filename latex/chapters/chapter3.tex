@@ -1,0 +1,34 @@
+\chapter{Requirements and Data Analysis}\label{ch:data}
+\section{Research design and requirements}
+The study uses controlled trace-driven simulation. On each evaluation date, the baseline and all policy scenarios use identical jobs, requested resources, simulation runtimes, pseudonymous users, flexibility assignments and carry-in work. Only intended release decisions change. The intervention is therefore controlled at the input stage, while the output comparison still has to account for replay variation and time reconstruction. The model recreates selected aspects of Stanage rather than the complete production system.
+
+Four requirements guide the pipeline. Every result must be traceable to its workload and policy parameters. All expected jobs must complete, preventing missing or timed-out work from appearing as a saving. Carbon accounting must include the delayed execution tail and use a common horizon within each comparison. Finally, carbon, service impact and model sensitivity must be reported separately. Together, these requirements address the four research questions in Chapter~\ref{ch:introduction}.
+
+Simulator research distinguishes a functioning replay from a demonstrated reproduction of a physical installation~\cite{jokanovic2018validation}. This study checks replay operation directly. Validation against the physical system is limited by the available historical configuration and Stanage telemetry.
+
+The primary simulator is the Slurm simulator associated with Simakov et al.~\cite{simakov2022accurate}. It allows the project to retain Slurm scheduling logic while replacing wall-clock time and job execution with simulated events. FastSim was investigated during initial development but was not retained in the final evaluation pipeline. This avoids combining results from engines with different input assumptions before either could be validated against the available case-study data.
+
+\section{Accounting archive and privacy}
+The supplied 2025 archive contains 4,114,698 raw rows. Deduplication and the retained-year processing produce 4,098,801 jobs associated with 929 anonymised users. These are archive-level counts, not the number of jobs in an individual policy experiment. The preparation stabilises duplicated column names, parses the pipe-delimited records and interprets timestamps in UTC. Duplicate records for numeric job identifiers across monthly files are resolved by retaining the latest record.
+
+The relevant fields include submission, eligibility, start and completion timestamps; state; partition; requested and allocated CPU, node, memory and GPU resources; and runtime or time-limit fields. Job names, commands, paths and research content are not needed for the comparative analysis. Window-local pseudonyms permit user-burden analysis without exporting raw user identities. Figures and tables in this dissertation use aggregate summaries; the raw archive and private local configuration are not part of the writing package.
+Table~\ref{tab:accounting-fields} uses the export's field names and Slurm's accounting definitions~\cite{schedmdSacct}.
+\input{assets/tables/table12_data_dictionary}
+The original export repeats the \texttt{ReqTRES} and \texttt{AllocTRES} headers. The reader gives their second occurrences the suffix \texttt{\_\_2} and checks for disagreements; they are not additional resource allocations. Memory suffixes and time units are parsed before comparison. An absent or zero energy field is not evidence that a job consumed no electricity.
+\input{assets/tables/table01_data_quality}
+
+Submission and eligibility have different meanings. A job can be submitted but unavailable to the scheduler while waiting for a dependency or an administrative hold. The baseline admission event is therefore anchored to \texttt{Eligible}, and dependency/hold time is kept as a separate component of user waiting. Treating all submission-to-start time as scheduler delay would assign the policy responsibility for time outside its control.
+
+Figure~\ref{fig:data-cohort-flow} separates the annual descriptive population from the daily replay population. The latter is reconstructed from eligibility and boundary state rather than obtained by simply taking one day of annual submissions.
+\input{supporting/figures/fig12_data_cohort_flow}
+\FloatBarrier
+
+\section{Exploratory data analysis}
+Before selecting evaluation workloads, the EDA examines job volume, states, resource classes, runtime, waiting and arrival patterns. Monthly variation helps identify changes in the archive and provides context for later checks across time. Arrival counts alone cannot indicate electrical utilisation: a short CPU task and a long multi-GPU task occupy very different amounts of resources.
+\IfFileExists{supporting/figures/fig01_monthly_workload.tex}{\input{supporting/figures/fig01_monthly_workload.tex}}{}
+\IfFileExists{supporting/figures/fig02_wait_runtime_quantiles.tex}{\input{supporting/figures/fig02_wait_runtime_quantiles.tex}}{}
+\IfFileExists{supporting/figures/fig03_arrival_patterns.tex}{\input{supporting/figures/fig03_arrival_patterns.tex}}{}
+\FloatBarrier
+The state audit helps interpret these patterns. In July and August, low completion fractions are associated with failed records concentrated among a small number of pseudonymous users. A holiday explanation would need independent evidence. The archive provides substantial scheduling information, but its lack of usable non-zero per-job energy fields limits validation of electrical estimates.
+
+Earlier June experiments used short pilot windows and a continuous daily window to develop the event pipeline and candidate policies. These remain development evidence because their results informed subsequent choices. The later 12 November comparison was initially frozen, but November then informed the development of the December low-impact rule. Its current role is consequently historical comparison and diagnosis. Describing it as the final untouched test of every later policy would misstate the sequence of work.

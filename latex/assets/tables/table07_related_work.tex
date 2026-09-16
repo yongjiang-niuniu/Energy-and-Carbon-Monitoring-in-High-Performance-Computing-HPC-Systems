@@ -1,0 +1,20 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption[Related work and its relevance to admission control]{Selected related work compared by intervention and information needs. The final column states the design relevance to this project; it is not a comparison of measured savings across systems.}
+\label{tab:related-work-boundary}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.18\linewidth}>{\raggedright\arraybackslash}p{0.36\linewidth}>{\raggedright\arraybackslash}p{0.38\linewidth}}
+\toprule
+Work & Intervention and information & Relevance to the Stanage study \\
+\midrule
+Let's Wait Awhile~\citep{wiesner2021wait} & Execution timing within a flexibility window; job duration and carbon information. & Evaluate exposure over runtime and state the delay allowance and forecast assumptions. \\
+GREEN~\citep{xu2025green} & ML-cluster scheduling with energy profiles, scaling and checkpoint-based preemption. & Consider carbon and capacity together; application resizing and checkpointing are outside the implemented admission layer. \\
+PCAPS~\citep{lechowicz2025pcaps} & Carbon-aware scheduling with task-precedence information and a completion-time trade-off. & Make service costs explicit; observed eligibility is available here, but a complete task DAG is not. \\
+Starburst~\citep{luo2024starburst} & Job-sensitive waiting budgets for hybrid-cloud cost and completion-time control. & Motivate bounded waiting; cloud migration and cost optimisation are not part of this experiment. \\
+CATS~\citep{cats2025,catsSchedulers} & Lightweight carbon-aware task timing, including documented \texttt{sbatch} integration. & Separate admission eligibility from the actual allocation and start chosen by Slurm. \\
+This study & Fixed-job release-time policies with declared carbon/load information, carry-in and matched Slurm replay. & Compare modelled carbon, waiting and user burden. Multi-day outcomes remain to be completed. \\
+\bottomrule
+\end{tabular}
+\end{table}

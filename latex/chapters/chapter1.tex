@@ -1,0 +1,46 @@
+\chapter{Introduction}\label{ch:introduction}
+\section{Background}
+High-performance computing supports research beyond the capacity of individual workstations. Shared CPU and GPU resources consume electricity during execution and while idle. Their carbon footprint depends on the equipment included, how energy is estimated or measured, and the electricity carbon intensity. Runtime and resource requests alone cannot determine that footprint~\cite{lannelongue2021green,anthony2020carbontracker}.
+
+Electricity carbon intensity changes over time. Temporal-shifting studies examine whether jobs that tolerate a later start can run with lower estimated emissions~\cite{wiesner2021wait,sukprasert2024limitations}. A long job may still extend into a higher-intensity period, and delayed work may compete with later arrivals. Resource allocation also differs from electrical load. Evaluation must account for these effects and the waiting imposed on users.
+
+The case study is Stanage, the University of Sheffield HPC service, where Slurm manages heterogeneous batch resources~\cite{sheffieldStanage}. The experiments retain Slurm's priority, resource-feasibility and job-start decisions. A separate admission layer changes when selected jobs become visible to it, leaving the scheduler in place.
+
+\section{Problem and motivation}
+Stanage accounting contains timestamps and resource allocations, but no usable per-job energy measurements. Approximate cage-power figures supplied during supervision support a power scenario, not a calibrated electrical model for each job. Controlled comparisons therefore need explicit assumptions; assigning precise individual footprints would overstate the evidence.
+
+A policy may lower estimated emissions through long delays, concentrate the burden on a few users, or appear favourable under only one utilisation proxy. A carbon percentage alone cannot distinguish these outcomes. Leaving uncertain jobs unchanged may protect service without reducing carbon on that date. The project therefore evaluates the trade-off, rather than selecting the largest isolated saving.
+
+Earlier work established the simulator and candidate rules. The final comparison evaluates seven policies on matched workloads across five dates, with repeated baselines. A bounded engineering extension tests candidate selection, user budgets and queue feedback. Their evaluation states the limits on information access, waiting cost and model certainty.
+
+\section{Aim and objectives}
+The aim is to evaluate the carbon and service consequences of carbon-aware job admission through trace-driven Slurm simulation under limited energy telemetry.
+
+The objectives follow the order of the research:
+\begin{itemize}
+\item Audit the accounting archive and describe workload timing, resource use and data-quality limits.
+\item Reconstruct evaluation workloads, including jobs already running, queued or held at each date boundary.
+\item Implement representative admission policies and estimate operational carbon within a consistent accounting boundary.
+\item Compare carbon, service outcomes and user delay on matched workloads, then assess variation across dates, replay repeats and resource-occupancy models.
+\end{itemize}
+The outputs include cleaned aggregates, workload manifests, policy decisions, completed replay records and comparative results.
+
+\section{Research questions}
+The following questions bring together the issues investigated during the project and define the scope of the dissertation.
+\begin{enumerate}
+\item\label{rq:carbon} How do representative carbon-aware admission policies change modelled operational carbon for a matched Slurm workload?
+\item\label{rq:service} What waiting and user-burden costs accompany these changes, and how does the adaptive waiting budget affect that trade-off?
+\item\label{rq:information} How do policies with different runtime/load information and delay safeguards compare, including variants that use estimates from earlier months?
+\item\label{rq:robustness} How consistent are the carbon and service outcomes across dates, replay variation and occupancy-model assumptions?
+\end{enumerate}
+These questions need separate answers. Carbon and service outcomes can move in different directions. Historical runtime estimates may still be combined with a carbon series that was unavailable at decision time. Similarly, a replay can complete successfully while providing too little evidence to establish a robust policy benefit.
+
+\section{Contributions and scope}
+The implementation converts anonymised accounting into replay inputs and paired carbon/service analyses. It reconstructs running, queued and held carry-in, applies rules with different safeguards and information requirements, and separates workload validity from timing fidelity and policy outcomes. The main comparison covers seven rules on five dates through 55 final replays, showing date-dependent carbon changes, concentrated delay and differences between occupancy models. A later prototype tests candidate feasibility, shared user budgets and cancellation of remaining delay. These small tests establish mechanism behaviour, not another five-date performance result.
+
+The study is retrospective. Finite arrival windows drain without continuous later production arrivals. The simulator executes supplied or capped runtimes; each policy separately limits the runtime information available for its decisions. Carbon uses re-anchored intervals derived from intended release and logged queue wait, with a separate timing audit. Policies share historical regional carbon series. Without archived decision-time forecasts, even the history-only variants cannot establish a complete online carbon-forecast evaluation.
+
+The primary model covers cage-level operational electricity, excluding hardware manufacture, disposal and other embodied emissions; lifecycle accounting needs additional evidence~\cite{gupta2022act}. No production Slurm change, hardware power cap, checkpointing or preemption is deployed. Simulated flexibility is an experimental assumption, not recorded user consent to delayed service.
+
+\section{Overview}
+Chapter~\ref{ch:literature} reviews related work. Chapter~\ref{ch:data} describes the requirements and dataset, and Chapter~\ref{ch:implementation} explains the methodology and implementation. Chapter~\ref{ch:evaluation} presents the development evidence, five-date comparison and feedback-extension tests. Chapters~\ref{ch:discussion} and~\ref{ch:conclusion} discuss the findings, limitations and future work. The appendices provide the evidence guide and complete daily results.

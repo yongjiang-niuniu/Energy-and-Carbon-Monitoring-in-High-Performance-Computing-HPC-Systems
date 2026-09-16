@@ -1,0 +1,25 @@
+{
+  "revision": "2026-09-10 final post-study maintenance",
+  "experimental_code_changed_retroactively": false,
+  "new_simulations": false,
+  "new_training": false,
+  "carbon_sensitivity_recalculated": false,
+  "frozen_results_changed": false,
+  "prior_code_archive": "outputs/submission_20260910/Stanage_Project_Code_20260910.zip",
+  "prior_code_archive_sha256": "3393b85c88a63481ee8b6e8347940d62fb5783e20aa81fced0a0945b99804d72",
+  "scope": [
+    "Report negative waiting, missing timing and runtime tolerance separately from job completion; preserve raw values.",
+    "Preserve simulator and Docker process exits rather than masking them with a successful shell command; unknown historical exits remain unknown.",
+    "Include the submission-time and negative-wait audit with an external campaign path and a new output directory.",
+    "Correct the carbon-start comment without changing accounting arithmetic.",
+    "Add synthetic-fixture regression coverage."
+  ],
+  "unchanged": [
+    "Seven frozen policy algorithms",
+    "Carbon accounting arithmetic",
+    "Simulator C source",
+    "55 accepted final replays",
+    "35 date-policy outcomes"
+  ],
+  "remaining_limit": "The underlying simulator/log clock behaviour is not proven fixed. Existing timing anomalies and their unquantified effects are disclosed in the final manuscript."
+}

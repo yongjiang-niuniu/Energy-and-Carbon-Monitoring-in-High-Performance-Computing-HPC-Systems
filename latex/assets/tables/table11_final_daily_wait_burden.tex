@@ -1,0 +1,62 @@
+% Frozen CSV inputs: post_analysis/daily_normalized_outcomes.csv; summary/daily_strategy_results.csv; post_analysis/paired_wait_and_spillover.csv
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.23}
+\setlength{\LTleft}{\fill}\setlength{\LTright}{\fill}
+\begin{longtable}{@{}llrrrrrrr@{}}
+\caption{All 35 daily wait and burden results (2025). $n_D$ counts directly held jobs; $\bar D$ is mean hold. $\overline{\Delta W}$ and $P95(\Delta W)$ summarize paired added total wait; $\Delta W_0$ is the mean among jobs not directly held. $U_D,U_+$ are the largest user's shares of total hold and positive added wait. Times are minutes per job in the stated cohort. $\dagger$ marks zero-action replay variability.}\label{tab:final-daily-wait}\\
+\toprule
+Date & Policy & $n_D$ & $\bar D$ & $\overline{\Delta W}$ & $P95(\Delta W)$ & $\Delta W_0$ & $U_D$ & $U_+$ \\
+ & & (jobs) & (min) & (min) & (min) & (min) & (\%) & (\%) \\
+\midrule\endfirsthead
+\multicolumn{9}{@{}l}{\small Table \thetable\ continued}\\
+\toprule
+Date & Policy & $n_D$ & $\bar D$ & $\overline{\Delta W}$ & $P95(\Delta W)$ & $\Delta W_0$ & $U_D$ & $U_+$ \\
+ & & (jobs) & (min) & (min) & (min) & (min) & (\%) & (\%) \\
+\midrule\endhead
+\midrule\multicolumn{9}{r@{}}{\footnotesize Continued on next page}\\\endfoot
+\bottomrule\endlastfoot
+11/13 & B1 & 1026 & 36.35 & +35.26 & +224.07 & -1.38 & 50.6 & 50.3 \\
+11/13 & B2 & 705 & 22.02 & +21.00 & +239.37 & -1.22 & 57.7 & 57.2 \\
+11/13 & AD & 470 & 12.51 & +11.62 & +99.88 & -1.06 & 77.1 & 75.8 \\
+11/13 & HY & 860 & 31.70 & +30.63 & +239.33 & -1.26 & 62.1 & 61.7 \\
+11/13 & HI & 10 & 0.32 & +0.40 & +1.09 & +0.05 & 63.7 & 41.9 \\
+11/13 & OR$^{\dagger}$ & 0 & 0.00 & -0.08 & +0.21 & -0.08 & -- & 62.8 \\
+11/13 & LI & 2 & 0.02 & +0.04 & +0.88 & +0.02 & 50.0 & 65.3 \\
+\midrule
+11/15 & B1 & 324 & 29.12 & +26.45 & +213.65 & -6.04 & 52.1 & 47.6 \\
+11/15 & B2$^{\dagger}$ & 0 & 0.00 & -0.60 & +1.21 & -0.60 & -- & 31.3 \\
+11/15 & AD & 73 & 2.00 & +3.10 & +43.76 & -2.42 & 73.4 & 61.3 \\
+11/15 & HY & 252 & 21.80 & +19.36 & +187.96 & -5.59 & 43.1 & 39.1 \\
+11/15 & HI$^{\dagger}$ & 0 & 0.00 & +0.72 & +9.14 & +0.72 & -- & 51.5 \\
+11/15 & OR$^{\dagger}$ & 0 & 0.00 & +0.00 & +3.71 & +0.00 & -- & 46.6 \\
+11/15 & LI$^{\dagger}$ & 0 & 0.00 & +0.56 & +5.79 & +0.56 & -- & 48.5 \\
+\midrule
+11/18 & B1 & 1423 & 40.31 & +39.57 & +221.02 & -0.23 & 61.1 & 62.1 \\
+11/18 & B2 & 260 & 1.39 & +1.07 & +3.77 & -0.20 & 51.5 & 52.7 \\
+11/18 & AD & 64 & 1.58 & +1.11 & +1.87 & -0.17 & 37.5 & 35.3 \\
+11/18 & HY & 586 & 13.62 & +12.79 & +194.29 & -0.31 & 67.1 & 69.3 \\
+11/18 & HI & 5 & 0.16 & +0.15 & +3.54 & +0.05 & 50.1 & 41.8 \\
+11/18 & OR$^{\dagger}$ & 0 & 0.00 & +0.64 & +5.63 & +0.64 & -- & 50.6 \\
+11/18 & LI & 1 & 0.01 & +0.28 & +2.30 & +0.27 & 100.0 & 52.0 \\
+\pagebreak
+12/09 & B1 & 820 & 41.67 & +40.92 & +363.28 & -6.71 & 26.9 & 37.9 \\
+12/09 & B2$^{\dagger}$ & 0 & 0.00 & -5.81 & +27.63 & -5.81 & -- & 26.0 \\
+12/09 & AD & 176 & 7.54 & +28.05 & +85.74 & +20.68 & 31.7 & 29.0 \\
+12/09 & HY & 175 & 8.73 & +23.08 & +93.00 & +22.70 & 43.8 & 39.3 \\
+12/09 & HI & 41 & 2.00 & +13.97 & +57.14 & +10.33 & 86.8 & 32.4 \\
+12/09 & OR$^{\dagger}$ & 0 & 0.00 & -7.07 & +12.25 & -7.07 & -- & 21.7 \\
+12/09 & LI$^{\dagger}$ & 0 & 0.00 & +0.66 & +44.13 & +0.66 & -- & 33.7 \\
+\midrule
+12/10 & B1 & 741 & 30.91 & +663.10 & +1223.42 & +571.36 & 54.9 & 48.3 \\
+12/10 & B2$^{\dagger}$ & 0 & 0.00 & +78.60 & +154.31 & +78.60 & -- & 48.8 \\
+12/10 & AD & 61 & 1.15 & +52.14 & +123.13 & +51.75 & 26.7 & 53.9 \\
+12/10 & HY & 81 & 4.04 & +69.43 & +272.14 & +65.00 & 20.8 & 39.8 \\
+12/10 & HI & 2 & 0.13 & +9.61 & +73.42 & +9.60 & 52.3 & 34.6 \\
+12/10 & OR$^{\dagger}$ & 0 & 0.00 & +50.70 & +92.20 & +50.70 & -- & 54.5 \\
+12/10 & LI$^{\dagger}$ & 0 & 0.00 & +85.85 & +159.27 & +85.85 & -- & 52.7 \\
+\end{longtable}
+\noindent\begin{minipage}{\linewidth}\footnotesize $\bar D$ and $\overline{\Delta W}$ include all evaluation jobs; P95 is a percentile of paired differences. -- means undefined hold concentration because total hold is zero. The companion CSV retains source seconds, P99, positive wait, delayed-beyond-runtime counts and maximum-user burden aggregates. No raw user identifiers are included.
+\end{minipage}\par
+\endgroup

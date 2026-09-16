@@ -1,0 +1,79 @@
+{
+  "manifest_version": 1,
+  "frozen_at_utc": "2026-09-02T18:00:00Z",
+  "experiment_id": "low_impact_dynamic_dec08_20260902",
+  "status": "date_acceptance_and_exact_policy_frozen_before_final_policy_generation_or_outcome_inspection",
+  "development_window": {
+    "t0_utc": "2025-11-12T00:00:00Z",
+    "role": "strategy development only; never final confirmation"
+  },
+  "final_untouched_window": {
+    "t0_utc": "2025-12-08T00:00:00Z",
+    "t1_utc_exclusive": "2025-12-09T00:00:00Z",
+    "expected_total_jobs": 5494,
+    "expected_evaluation_jobs": 4304,
+    "expected_carry_in_jobs": 1190,
+    "selection_information": "workload composition only",
+    "selection_reason": "Monday window with 4,304 evaluation jobs, 1,190 carry-in jobs and 477 GPU jobs; selected before downloading or inspecting its carbon trace",
+    "reselection_after_outcome": false
+  },
+  "history_model": {
+    "training_months": ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november"],
+    "holdout_month": "december",
+    "future_schedule_or_observed_runtime_allowed": false
+  },
+  "strategy_family": "history-only low-impact dynamic admission",
+  "predeclared_strategy_limits": {
+    "flex_fraction": 0.3,
+    "maximum_job_delay_minutes": 60,
+    "maximum_user_delay_minutes": 60,
+    "maximum_delayed_jobs_per_user": 2,
+    "delay_budget_uses": "0.5 times earlier-month q25 runtime",
+    "carbon_cost_uses": "earlier-month q90 runtime",
+    "load_forecast_uses": "earlier-month q75 interval load",
+    "queue_wait_forecast_uses": "earlier-month q50 wait",
+    "long_uncertain_gpu_action": "abstain",
+    "primary_carbon_gate": "capacity-weighted proxy",
+    "requested_node_upper_role": "diagnostic only",
+    "allocated_distinct_node_role": "diagnostic only because no-policy replay placement is not stable"
+  },
+  "final_policy_parameters": {
+    "selected_from": "five development iterations on 2025-11-12 only",
+    "maximum_job_delay_minutes": 60,
+    "runtime_budget_ratio": 0.5,
+    "delay_runtime_quantile": 0.25,
+    "carbon_runtime_quantile": 0.9,
+    "load_quantile": 0.75,
+    "queue_wait_quantile": 0.5,
+    "candidate_step_minutes": 5,
+    "minimum_capacity_saving_pct": 1.0,
+    "minimum_carbon_return": 0.001,
+    "wait_penalty": 0.01,
+    "congestion_penalty": 0.25,
+    "capacity_cap_fraction": 0.9,
+    "maximum_runtime_uncertainty_ratio": 20.0,
+    "long_gpu_hours": 12.0,
+    "long_gpu_uncertainty_limit": 1.5,
+    "maximum_user_delay_minutes": 60,
+    "maximum_delayed_jobs_per_user": 2
+  },
+  "acceptance": {
+    "all_expected_jobs_completed": true,
+    "timeouts": 0,
+    "workload_invariant_mismatches": 0,
+    "carry_in_audit": "pass",
+    "waiting_budget_violations": 0,
+    "information_leakage": 0,
+    "capacity_dynamic_carbon_reduction_pct_minimum": 0.05,
+    "capacity_result_must_exceed_previous_noop_noise_pct": 0.00591,
+    "total_user_wait_p95_increase_seconds_maximum": 300,
+    "jobs_delayed_longer_than_actual_runtime": 0,
+    "maximum_user_policy_delay_minutes": 60,
+    "maximum_single_user_share_of_policy_delay": 0.4
+  },
+  "interpretation": {
+    "success": "evidence of a low-impact capacity-model improvement on one new date, not production readiness or measured electricity saving",
+    "failure": "retain as a negative result; do not tune on the December outcome",
+    "large_reduction_claim": "not permitted unless the frozen threshold is exceeded and the absolute modelled saving is reported beside it"
+  }
+}

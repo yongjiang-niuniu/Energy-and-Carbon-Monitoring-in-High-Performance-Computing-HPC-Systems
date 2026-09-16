@@ -1,0 +1,40 @@
+{
+  "baseline": "simulator/slurm_policy_experiments/scenarios/warmup_2h_20260817/baseline",
+  "carbon": "simulator/slurm_policy_experiments/data/neso_south_yorkshire_2025-06-10_to_13.csv",
+  "scenario_root": "simulator/slurm_policy_experiments/scenarios/loop_engineering_20260824/iteration_2",
+  "result_root": "simulator/slurm_policy_experiments/results/loop_engineering_20260824/iteration_2",
+  "horizon_start_utc": "2025-06-10T20:00:00Z",
+  "timeout_seconds": 1200,
+  "scenarios": [
+    {
+      "name": "b1_shift_1h",
+      "strategy": "b1",
+      "parameters": {"b1_max_delay_hours": 1, "flex_fraction": 0.30}
+    },
+    {
+      "name": "b1_shift_2h",
+      "strategy": "b1",
+      "parameters": {"b1_max_delay_hours": 2, "flex_fraction": 0.30}
+    },
+    {
+      "name": "b1_shift_4h",
+      "strategy": "b1",
+      "parameters": {"b1_max_delay_hours": 4, "flex_fraction": 0.30}
+    },
+    {
+      "name": "b2_cap_25",
+      "strategy": "b2",
+      "parameters": {"b2_max_delay_hours": 4, "cap_fraction": 0.25, "high_quantile": 0.75, "flex_fraction": 0.30}
+    },
+    {
+      "name": "b2_cap_50",
+      "strategy": "b2",
+      "parameters": {"b2_max_delay_hours": 4, "cap_fraction": 0.50, "high_quantile": 0.75, "flex_fraction": 0.30}
+    },
+    {
+      "name": "b2_cap_75",
+      "strategy": "b2",
+      "parameters": {"b2_max_delay_hours": 4, "cap_fraction": 0.75, "high_quantile": 0.75, "flex_fraction": 0.30}
+    }
+  ]
+}

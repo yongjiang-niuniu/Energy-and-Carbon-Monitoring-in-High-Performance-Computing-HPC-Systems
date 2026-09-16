@@ -1,0 +1,95 @@
+% Adapted from the University of Sheffield COM Dissertation Template 1.0,
+% updated 22 October 2025. Root file for this dated writing draft.
+\documentclass[11pt,oneside]{book}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{setspace}
+\usepackage[toc,page]{appendix}
+\usepackage{graphicx,booktabs,longtable,array,amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{microtype}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{fancyhdr}
+\usepackage[hidelinks,hypertexnames=false]{hyperref}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small\nouppercase{\leftmark}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[C]{\small\nouppercase{\leftmark}}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+\makeatletter
+\renewcommand{\chaptermark}[1]{\markboth{\@chapapp\ \thechapter.\ #1}{}}
+\makeatother
+\renewcommand{\bibsection}{%
+  \chapter*{References}%
+  \markboth{References}{References}%
+  \addcontentsline{toc}{chapter}{References}%
+}
+\setlength{\emergencystretch}{2em}
+\widowpenalty=10000
+\clubpenalty=10000
+\raggedbottom
+\newcommand{\draftnote}[1]{\par\medskip\noindent\textcolor{blue!55!black}{\textbf{Writing status.} #1}\par\medskip}
+\newcommand{\co}{CO\textsubscript{2}}
+\begin{document}
+\frontmatter
+\begin{titlepage}
+\begin{center}
+\includegraphics[width=4cm]{images/UOSLogo_Portrait_Violet_RGB.png}\\[1.4cm]
+{\huge\bfseries Evaluating Carbon-Aware Job Scheduling in High-Performance Computing using Trace-Driven Slurm Simulation\par}
+\vspace{0.5cm}
+{\Large A Stanage Case Study\par}
+\vspace{1.4cm}
+{\Large Yongjiang Liu\par}
+\vspace{0.7cm}
+{\large\emph{Supervisor:} Tahsinur R Khan\par}
+\vspace{0.2cm}
+{\large\emph{Co-supervisor:} Dr Fred Sonnenwald\par}
+\vspace{1cm}
+{\large A dissertation submitted in fulfilment of the requirements\\for the degree of\\[0.2cm]
+Master of Science in Advanced Computer Science\\[0.4cm]
+School of Computer Science\\University of Sheffield\par}
+\vfill
+{\large September 2026\par}
+\end{center}
+\end{titlepage}
+\chapter*{Declaration}
+\markboth{Declaration}{Declaration}
+\setstretch{1.1}
+All sentences or passages quoted in this report from other people's work have been specifically acknowledged by clear cross-referencing to author, work and page(s). Any illustrations that are not the work of the author of this report have been used with the explicit permission of the originator and are specifically acknowledged. I understand that failure to do this amounts to plagiarism and will be considered grounds for failure in this project and the degree examination as a whole.\par
+\vspace{1cm}
+\noindent\begin{tabular}{@{}ll@{}}
+Name: & Yongjiang Liu\\[3mm]
+Signature: & Yongjiang Liu (electronic signature)\\[3mm]
+Date: & 16 September 2026
+\end{tabular}
+\input{chapters/abstract}
+\input{chapters/acknowledgements}
+\tableofcontents
+\listoffigures
+\listoftables
+\mainmatter
+\input{chapters/chapter1}
+\input{chapters/chapter2}
+\input{chapters/chapter3}
+\input{chapters/chapter4}
+\input{chapters/chapter5}
+\input{chapters/chapter6}
+\input{chapters/chapter7}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\begin{appendices}
+\input{chapters/appendixA}
+\input{chapters/appendixB}
+\input{chapters/appendixC}
+\input{chapters/appendixD}
+\end{appendices}
+\end{document}

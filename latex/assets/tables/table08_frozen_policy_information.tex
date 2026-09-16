@@ -1,0 +1,25 @@
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.16}
+\caption[Frozen policy information and key parameters]{Information conditions and selected frozen settings for the five-date design. All rows use the same retrospective regional carbon series and 30\% target flexibility. $R$ is given observed runtime; $\widehat R$ is a history estimate. Conditions describe decisions, not measured outcomes.}
+\label{tab:frozen-policy-information}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.15\linewidth}>{\raggedright\arraybackslash}p{0.265\linewidth}>{\raggedright\arraybackslash}p{0.18\linewidth}>{\raggedright\arraybackslash}p{0.34\linewidth}@{}}
+\toprule
+Policy & Decision information & Delay bound & Key settings \\
+\midrule
+B1 runtime & Given $R$; runtime-average intensity & 4 h & Minimum average intensity; no load penalty. \\
+B2 & Given $R$ for projected node requests; release-time intensity & 4 h & Carbon q75; node-request cap = 50\% of high-carbon reference peak, minimum 1 node. \\
+Adaptive & Given $R$; CPU/GPU class-load projection & $\min(4\,\mathrm{h},R)$ & 2\% intensity gate; wait/congestion weights 0.10/0.25; carbon q75; class threshold 0.50. \\
+Day/night hybrid & Given $R$; information follows selected branch & 4 h & B2 at 08:00--18:00 UTC; runtime B1 otherwise. \\
+History-only & Earlier-month runtime, load and queue-wait q75 & $\min(4\,\mathrm{h},\widehat R)$ & Capacity/node saving gates 2\%/2\%; weights 0.10/0.25; class threshold 0.75; return gate 0.05. \\
+Balanced oracle & Given $R$ and completed baseline schedule & $\min(4\,\mathrm{h},R)$ & Capacity/node gates 1\%/0.5\%; weights 0.03/0.10; class threshold 0.75; return gate 0.02. \\
+Low-impact history & Earlier-month predictions; runtime q25 for delay budget & 60 min; also $0.5\widehat R_{q25}$ and source time limit & Capacity gate 1\%; weights 0.01/0.25; class threshold 0.90; return gate 0.001; per user: 60 min and 2 moved jobs. \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{\linewidth}\footnotesize
+Weights are wait/congestion coefficients. Return gates use the generator's carbon-saving proxy per policy-delay hour; they are not validated electrical savings. History and oracle differ in parameters as well as information, so their comparison is not an information-only ablation. B2's cap is a node-request admission threshold, whereas the other class thresholds enter congestion terms; none is a hardware power limit. Full configuration and prediction safeguards remain in the frozen manifest.
+\end{minipage}
+\end{table}

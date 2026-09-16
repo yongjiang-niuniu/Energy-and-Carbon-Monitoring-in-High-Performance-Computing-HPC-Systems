@@ -1,0 +1,97 @@
+{
+  "manifest_version": 1,
+  "frozen_at_utc": "2026-09-02T00:00:00Z",
+  "experiment_id": "untouched_24h_20260902",
+  "status": "method_frozen_before_baseline",
+  "source_archive": "/Users/yongjiangliu/Downloads/stanage_2025_queue_record.zip",
+  "evaluation_window": {
+    "t0_utc": "2025-11-12T00:00:00Z",
+    "t1_utc_exclusive": "2025-11-13T00:00:00Z",
+    "selection_reason": "Previously unused 24-hour window with CPU and GPU work, long-runtime tail, and identifiable running, queued and held carry-in state.",
+    "evaluation_membership": "Eligible in [T0,T1), after carry-in precedence",
+    "completion_rule": "Continue each Slurm replay until every selected job reaches a terminal state"
+  },
+  "carry_in": {
+    "method": "exact_from_source_timestamps",
+    "running": "Start < T0 < End; inject first at T0 with remaining runtime",
+    "queued": "Eligible <= T0 < Start; inject at T0",
+    "held": "Submit < T0 < Eligible; inject at source Eligible",
+    "policy_eligible": false
+  },
+  "common_inputs": {
+    "seed": 42,
+    "flex_fraction": 0.3,
+    "max_runtime_hours": 96,
+    "carbon_file": "data/neso_south_yorkshire_2025-11-11_to_20.csv",
+    "configuration": "config/stanage_2025_assumed"
+  },
+  "history_model": {
+    "training_months": ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october"],
+    "holdout_month": "november",
+    "future_schedule_or_observed_runtime_allowed": false
+  },
+  "formal_scenarios": [
+    "baseline",
+    "b1_runtime_1h",
+    "b1_runtime_2h",
+    "b1_runtime_4h",
+    "b2_q75_cap50",
+    "adaptive_balanced",
+    "time_hybrid_08_18",
+    "dynamic_forecast_strict_oracle",
+    "dynamic_forecast_balanced_oracle",
+    "history_only",
+    "forecast_consensus_80pct",
+    "safe_rolling_balanced"
+  ],
+  "frozen_parameters": {
+    "b2": {"high_quantile": 0.75, "cap_fraction": 0.5, "max_delay_hours": 4},
+    "adaptive_balanced": {"max_delay_hours": 4, "wait_budget_ratio": 1, "minimum_saving_pct": 2, "wait_penalty": 0.1, "congestion_penalty": 0.25},
+    "time_hybrid": {"day_start_hour_utc": 8, "day_end_hour_utc": 18, "b1_max_delay_hours": 4, "b2_max_delay_hours": 4},
+    "history_only": {"runtime_quantile": 0.75, "load_quantile": 0.75, "queue_wait_quantile": 0.75, "max_delay_hours": 4, "minimum_dual_proxy_saving_pct": 2, "runtime_uncertainty_gate": "disabled_for_consensus_reference"},
+    "forecast_consensus": {"noise_scenarios": 15, "minimum_support": 12},
+    "safe_rolling_balanced": {
+      "candidate_step_minutes": 30,
+      "max_delay_hours": 4,
+      "runtime_budget_quantile": 0.75,
+      "runtime_risk_quantile": 0.9,
+      "queue_wait_risk_quantile": 0.9,
+      "load_risk_quantile": 0.9,
+      "carbon_interval_fraction": 0.1,
+      "minimum_dual_proxy_saving_pct": 2,
+      "minimum_carbon_return": 0.05,
+      "capacity_cap_fraction": 0.75,
+      "runtime_q90_q50_diagnostic_ratio": 1.75,
+      "long_gpu_hours": 12,
+      "long_gpu_q90_q50_abstention_ratio": 1.5,
+      "per_user_delay_budget_hours": 4,
+      "per_user_delayed_job_limit": 2
+    }
+  },
+  "common_carbon_horizon_rule": "After all formal replays, use T0 through the latest completion rounded up to a 30-minute interval for every scenario.",
+  "acceptance": {
+    "all_expected_jobs_completed": true,
+    "timeouts": 0,
+    "workload_invariant_mismatches": 0,
+    "carry_in_audit": "pass",
+    "waiting_budget_violations": 0,
+    "duplicate_policy_delays": 0,
+    "information_leakage": 0,
+    "negative_results_retained": true
+  },
+  "method_revision_log": [
+    {
+      "revision": 1,
+      "stage": "generation preflight before any policy replay",
+      "change": "The general q90/q50 ratio was changed from a hard gate to a diagnostic. The q90 runtime remains the conservative cost input, and the hard uncertainty abstention remains for long GPU jobs.",
+      "reason": "The initial gate duplicated the q90 protection and structurally rejected every flexible job because the short-job runtime distribution has a near-one-minute median. No realised Slurm or carbon result was available or used."
+    },
+    {
+      "revision": 2,
+      "stage": "generation preflight before any policy replay",
+      "change": "The legacy History-only reference no longer hard-rejects jobs by q90/q50 ratio; forecast stability is instead tested by the frozen 15-scenario, 80 percent consensus gate.",
+      "reason": "A zero-decision reference makes the consensus experiment undefined as a stability test. No realised Slurm or carbon result was available or used."
+    }
+  ],
+  "no_outcome_tuning": "Parameters are frozen before policy replay. The documented preflight correction used no realised policy outcome. Failed or negative scenarios remain in the final comparison."
+}

@@ -1,0 +1,10 @@
+check,count
+Raw accounting rows,4114698
+Duplicate rows removed,14576
+Invalid JobIDRaw excluded,1
+Globally unique valid jobs,4100121
+Outside 2025 or missing Submit,1320
+Retained 2025 submission cohort,4098801
+Missing Start in retained cohort,92536
+Negative eligible wait,7
+Invalid requested GPU counts,2

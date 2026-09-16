@@ -1,0 +1,38 @@
+{
+  "baseline": "simulator/slurm_policy_experiments/scenarios/fred_feedback_audit_20260824/daily_cycle/baseline",
+  "carbon": "simulator/slurm_policy_experiments/data/neso_south_yorkshire_2025-06-10_to_13.csv",
+  "scenario_root": "simulator/slurm_policy_experiments/scenarios/fred_feedback_audit_20260824/daily_cycle/policies",
+  "result_root": "simulator/slurm_policy_experiments/results/fred_feedback_audit_20260824/daily_cycle",
+  "horizon_start_utc": "2025-06-10T02:00:00Z",
+  "timeout_seconds": 2400,
+  "scenarios": [
+    {
+      "name": "adaptive_balanced",
+      "strategy": "adaptive",
+      "parameters": {
+        "b1_max_delay_hours": 4,
+        "b2_max_delay_hours": 4,
+        "flex_fraction": 0.30,
+        "wait_budget_ratio": 1.0,
+        "min_carbon_saving_pct": 2.0,
+        "wait_penalty": 0.10,
+        "congestion_penalty": 0.25,
+        "high_quantile": 0.75,
+        "cap_fraction": 0.50
+      }
+    },
+    {
+      "name": "time_hybrid_08_18",
+      "strategy": "time-hybrid",
+      "parameters": {
+        "b1_max_delay_hours": 4,
+        "b2_max_delay_hours": 4,
+        "flex_fraction": 0.30,
+        "high_quantile": 0.75,
+        "cap_fraction": 0.50,
+        "day_start_hour_utc": 8,
+        "day_end_hour_utc": 18
+      }
+    }
+  ]
+}

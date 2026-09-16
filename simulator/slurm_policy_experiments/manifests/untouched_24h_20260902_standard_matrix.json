@@ -1,0 +1,62 @@
+{
+  "manifest_version": 1,
+  "experiment_id": "untouched_24h_20260902_standard_matrix",
+  "baseline": "simulator/slurm_policy_experiments/scenarios/untouched_24h_20260902/baseline",
+  "carbon": "simulator/slurm_policy_experiments/data/neso_south_yorkshire_2025-11-11_to_20.csv",
+  "scenario_root": "simulator/slurm_policy_experiments/scenarios/untouched_24h_20260902/policies",
+  "result_root": "simulator/slurm_policy_experiments/results/untouched_24h_20260902/standard_matrix",
+  "timeout_seconds": 21600,
+  "scenarios": [
+    {
+      "name": "b1_runtime_1h",
+      "strategy": "b1-runtime",
+      "parameters": {"flex_fraction": 0.3, "b1_max_delay_hours": 1}
+    },
+    {
+      "name": "b1_runtime_2h",
+      "strategy": "b1-runtime",
+      "parameters": {"flex_fraction": 0.3, "b1_max_delay_hours": 2}
+    },
+    {
+      "name": "b1_runtime_4h",
+      "strategy": "b1-runtime",
+      "parameters": {"flex_fraction": 0.3, "b1_max_delay_hours": 4}
+    },
+    {
+      "name": "b2_q75_cap50",
+      "strategy": "b2",
+      "parameters": {"flex_fraction": 0.3, "high_quantile": 0.75, "cap_fraction": 0.5, "b2_max_delay_hours": 4}
+    },
+    {
+      "name": "adaptive_balanced",
+      "strategy": "adaptive",
+      "parameters": {"flex_fraction": 0.3, "b1_max_delay_hours": 4, "wait_budget_ratio": 1, "min_carbon_saving_pct": 2, "wait_penalty": 0.1, "congestion_penalty": 0.25, "high_quantile": 0.75, "cap_fraction": 0.5}
+    },
+    {
+      "name": "time_hybrid_08_18",
+      "strategy": "time-hybrid",
+      "parameters": {"flex_fraction": 0.3, "day_start_hour_utc": 8, "day_end_hour_utc": 18, "b1_max_delay_hours": 4, "b2_max_delay_hours": 4, "high_quantile": 0.75, "cap_fraction": 0.5}
+    },
+    {
+      "name": "history_only",
+      "strategy": "dynamic-history",
+      "parameters": {
+        "flex_fraction": 0.3,
+        "b1_max_delay_hours": 4,
+        "wait_budget_ratio": 1,
+        "min_carbon_saving_pct": 2,
+        "min_node_saving_pct": 2,
+        "wait_penalty": 0.1,
+        "congestion_penalty": 0.25,
+        "cap_fraction": 0.75,
+        "min_carbon_return": 0.05,
+        "history_model_dir": "simulator/slurm_policy_experiments/models/history_quantiles_jan_oct_2025_nov_holdout",
+        "history_runtime_quantile": 0.75,
+        "history_load_quantile": 0.75,
+        "history_queue_wait_quantile": 0.75,
+        "history_max_queue_wait_hours": 4,
+        "history_max_runtime_uncertainty_ratio": 100
+      }
+    }
+  ]
+}

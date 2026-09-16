@@ -1,0 +1,26 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption[November policy comparison]{November single-date diagnostic results. Positive carbon reductions mean lower modelled load-related carbon; a positive P95 change means longer total user waiting. All twelve scenarios completed 3,900 jobs.}
+\label{tab:table03-november-results}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+Policy & Moved & Delay (h) & Capacity (\%) & Node (\%) & P95 change (min) \\
+\midrule
+Baseline & 0 & 0.00 & 0.0000 & 0.0000 & 0.00 \\
+B1 1 h & 407 & 252.45 & 0.1638 & -0.0634 & 13.24 \\
+B1 2 h & 420 & 583.24 & 0.4283 & -0.1220 & 43.08 \\
+B1 4 h & 528 & 1520.23 & 0.9797 & -0.2353 & 148.89 \\
+B2 Q75 / cap50 & 373 & 1114.53 & 0.6566 & -0.2330 & 149.02 \\
+Adaptive balanced & 191 & 484.43 & 0.6819 & -0.0239 & 70.35 \\
+08–18 UTC hybrid & 445 & 1402.52 & 0.8355 & -0.2325 & 168.47 \\
+Strict oracle (no move) & 0 & 0.00 & -0.0042 & -0.0239 & 0.20 \\
+Balanced oracle (no move) & 0 & 0.00 & -0.0053 & -0.0243 & -0.01 \\
+History-only & 9 & 28.75 & 0.1555 & -0.2118 & 0.01 \\
+80\% consensus & 9 & 28.75 & 0.1552 & -0.2127 & -0.01 \\
+Safe rolling (no move) & 0 & 0.00 & -0.0059 & -0.0243 & -0.01 \\
+\bottomrule
+\end{tabular}
+}%
+\end{table}

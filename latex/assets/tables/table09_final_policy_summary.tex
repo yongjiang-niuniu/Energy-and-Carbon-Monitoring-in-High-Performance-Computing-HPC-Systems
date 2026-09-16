@@ -1,0 +1,19 @@
+% Frozen CSV inputs: summary/strategy_stability_summary.csv; post_analysis/five_day_normalized_summary.csv; post_analysis/daily_normalized_outcomes.csv
+\begin{table}[htbp]
+\centering\small
+\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.2}
+\caption[Five-date primary policy summary]{Five-date descriptive primary results. Positive carbon values are savings; negative values are increases. No policy passes the frozen stability screen.}
+\label{tab:final-policy-summary}
+\begin{tabular}{@{}lrrrrrr@{}}\toprule
+Policy & Mean & Median & Worst & $\bar g$ & $\overline{\Delta W}$ & A0 \\
+ & (\%) & (\%) & (\%) & (g/job) & (min) & \\ \midrule
+B1 runtime & -0.0784 & +0.2205 & -2.6427 & -0.1250 & +161.059 & 0/5 \\
+B2 & -0.1371 & +0.0199 & -1.3488 & -0.0825 & +18.852 & 3/5 \\
+Adaptive & +0.0649 & +0.1696 & -0.9680 & -0.0240 & +19.205 & 0/5 \\
+Day/night hybrid & +0.1161 & +0.1758 & -0.6582 & -0.0038 & +31.058 & 0/5 \\
+History-only & +0.1021 & +0.2418 & -0.3028 & +0.0123 & +4.969 & 1/5 \\
+Balanced oracle & -0.1882 & -0.0190 & -0.8069 & -0.0709 & +8.837 & 5/5 \\
+Low-impact history & -0.2612 & +0.0156 & -1.3723 & -0.1039 & +17.479 & 3/5 \\
+\bottomrule\end{tabular}
+\par\smallskip\begin{minipage}{\linewidth}\footnotesize All rows contain five complete dates. Mean, median and worst summarize daily primary percentage savings; worst is the minimum. $\bar g$ averages $1000K_d/N_d$ equally across dates, where $K_d=C_{b,d}-C_{p,d}$ is cluster saving (kg CO$_2$). $\overline{\Delta W}$ averages daily paired mean added total wait. A0 counts zero-action dates, whose differences reflect replay variability. Different denominators can make mean percentage and mean normalized saving disagree in sign.
+\end{minipage}\end{table}

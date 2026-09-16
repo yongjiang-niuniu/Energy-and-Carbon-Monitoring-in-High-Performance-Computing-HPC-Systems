@@ -1,0 +1,9 @@
+FROM slurm-sim-scheduler-fix:latest
+COPY source /src
+COPY policy /opt/policy-v2
+RUN timeout -s KILL 1500 sh -c 'mkdir /build && cd /build && /src/configure \
+    --prefix=/opt/slurm-sim --sysconfdir=/opt/slurm-sim/etc \
+    --localstatedir=/opt/slurm-sim/var --enable-simulator \
+    --disable-x11 --without-munge --without-mysql_config --without-hwloc \
+    --without-json --without-yaml --without-jwt --without-http-parser --without-readline \
+    && make -j2 && make install && rm -rf /build /src'

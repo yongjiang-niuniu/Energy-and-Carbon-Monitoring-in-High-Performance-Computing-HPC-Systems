@@ -1,0 +1,11 @@
+{
+  "submitted_date": "2026-09-16",
+  "pdf_pages": 99,
+  "pdf_sha256": "28835c679be4785e67ed86f8f383c5b3102db9017e1c5cb1beb2465733320b97",
+  "submitted_code_zip_sha256": "d666512c07e9b79f14ecb1fa29b4a78d8e35b7b694efe7a25728d51eae659d7b",
+  "submitted_code_files": 2660,
+  "latex_zip_sha256": "381c2c06ece0f9373188da1d72b3533c4a89ff9a5e21bb68ce9d236984a332c1",
+  "code_files_preserved_byte_for_byte": true,
+  "paper_pdf_preserved_byte_for_byte": true,
+  "latex_note": "Original main, chapters, bibliography, figures and tables preserved. Duplicated supporting/ authoring audit material omitted."
+}

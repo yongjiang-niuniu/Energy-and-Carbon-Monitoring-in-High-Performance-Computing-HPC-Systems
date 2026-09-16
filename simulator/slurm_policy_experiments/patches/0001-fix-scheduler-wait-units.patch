@@ -1,0 +1,12 @@
+diff --git a/contribs/sim/slurmctld_job_scheduler.c b/contribs/sim/slurmctld_job_scheduler.c
+--- a/contribs/sim/slurmctld_job_scheduler.c
++++ b/contribs/sim/slurmctld_job_scheduler.c
+@@ -56,7 +56,7 @@ extern bool sim_sched_agent_loop(int64_t now64) {
+ 		gettimeofday(&now, NULL);
+ 		sched_last.tv_sec = now.tv_sec;
+ 		sched_last.tv_usec = now.tv_usec;
+-		sim_sched_thread_cond_wait_till = (int64_t)10000000*sched_last.tv_sec + sched_last.tv_usec + sched_min_interval;
++		sim_sched_thread_cond_wait_till = (int64_t)USEC_IN_SEC * sched_last.tv_sec + sched_last.tv_usec + sched_min_interval;
+ 		if (job_cnt) {
+ 			/* jobs were started, save state */
+ 			schedule_node_save();        /* Has own locking */

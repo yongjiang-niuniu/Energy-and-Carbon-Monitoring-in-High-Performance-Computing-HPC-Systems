@@ -1,0 +1,43 @@
+{
+  "manifest_version": 1,
+  "experiment_id": "untouched_24h_20260902_oracle_matrix",
+  "baseline": "simulator/slurm_policy_experiments/scenarios/untouched_24h_20260902/baseline",
+  "carbon": "simulator/slurm_policy_experiments/data/neso_south_yorkshire_2025-11-11_to_20.csv",
+  "scenario_root": "simulator/slurm_policy_experiments/scenarios/untouched_24h_20260902/policies",
+  "result_root": "simulator/slurm_policy_experiments/results/untouched_24h_20260902/oracle_matrix",
+  "timeout_seconds": 21600,
+  "scenarios": [
+    {
+      "name": "dynamic_forecast_strict_oracle",
+      "strategy": "dynamic-forecast",
+      "parameters": {
+        "schedule_forecast": "simulator/slurm_policy_experiments/scenarios/untouched_24h_20260902/baseline/job_results.csv",
+        "b1_max_delay_hours": 4,
+        "flex_fraction": 0.3,
+        "wait_budget_ratio": 1,
+        "min_carbon_saving_pct": 2,
+        "min_node_saving_pct": 2,
+        "wait_penalty": 0.05,
+        "congestion_penalty": 0.1,
+        "cap_fraction": 0.75,
+        "min_carbon_return": 0.05
+      }
+    },
+    {
+      "name": "dynamic_forecast_balanced_oracle",
+      "strategy": "dynamic-forecast",
+      "parameters": {
+        "schedule_forecast": "simulator/slurm_policy_experiments/scenarios/untouched_24h_20260902/baseline/job_results.csv",
+        "b1_max_delay_hours": 4,
+        "flex_fraction": 0.3,
+        "wait_budget_ratio": 1,
+        "min_carbon_saving_pct": 1,
+        "min_node_saving_pct": 0.5,
+        "wait_penalty": 0.03,
+        "congestion_penalty": 0.1,
+        "cap_fraction": 0.75,
+        "min_carbon_return": 0.02
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "baseline": "simulator/slurm_policy_experiments/scenarios/warmup_2h_20260817/baseline",
+  "carbon": "simulator/slurm_policy_experiments/data/neso_south_yorkshire_2025-06-10_to_13.csv",
+  "scenario_root": "simulator/slurm_policy_experiments/scenarios/fred_feedback_audit_20260824/sparse_extension",
+  "result_root": "simulator/slurm_policy_experiments/results/fred_feedback_audit_20260824/sparse_extension",
+  "horizon_start_utc": "2025-06-10T20:00:00Z",
+  "timeout_seconds": 1800,
+  "scenarios": [
+    {
+      "name": "b1_shift_6h",
+      "strategy": "b1",
+      "parameters": {"b1_max_delay_hours": 6, "flex_fraction": 0.30}
+    },
+    {
+      "name": "b1_shift_12h",
+      "strategy": "b1",
+      "parameters": {"b1_max_delay_hours": 12, "flex_fraction": 0.30}
+    },
+    {
+      "name": "b1_shift_18h",
+      "strategy": "b1",
+      "parameters": {"b1_max_delay_hours": 18, "flex_fraction": 0.30}
+    },
+    {
+      "name": "b2_cap_95",
+      "strategy": "b2",
+      "parameters": {"b2_max_delay_hours": 4, "cap_fraction": 0.95, "high_quantile": 0.75, "flex_fraction": 0.30}
+    }
+  ]
+}
